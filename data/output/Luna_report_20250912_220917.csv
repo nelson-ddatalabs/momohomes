@@ -1,0 +1,10 @@
+Room ID,Room Type,Width (ft),Height (ft),Area (sq ft),Panel Count,Coverage (%),Uncovered (sq ft),Cost ($),Load Bearing,Span Direction,6x8 Panels,6x6 Panels,4x6 Panels,4x4 Panels
+room_0,open_space,196.7,20.6,4029.65,2,2.4,3933.65,96.0,True,vertical,2,0,0,0
+room_1,living,61.0,9.3,559.945,1,8.6,511.94500000000005,48.0,False,vertical,1,0,0,0
+room_2,hallway,2.6,40.5,59.475,0,0.0,59.475,0,True,vertical,0,0,0,0
+room_3,entry,4.1,123.4,308.26,11,83.0,52.25999999999999,349.6000000000001,True,horizontal,0,0,10,1
+room_4,bedroom,219.3,133.4,27540.245,9,1.6,27108.245,432.0,True,vertical,9,0,0,0
+room_5,garage,8.8,125.9,745.155,8,51.5,361.155,384.0,True,horizontal,8,0,0,0
+room_6,bedroom,109.8,1.5,178.09,0,0.0,178.09,0,True,vertical,0,0,0,0
+room_7,primary_suite,195.2,1.5,369.885,0,0.0,369.885,0,True,vertical,0,0,0,0
+room_8,hallway,20.3,6.5,91.59,1,52.4,43.59,48.0,True,horizontal,1,0,0,0

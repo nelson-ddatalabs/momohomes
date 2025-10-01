@@ -1,0 +1,689 @@
+{
+  "timestamp": "2025-09-12 22:09:17",
+  "floor_plan_name": "Luna",
+  "strategy_used": "hybrid",
+  "optimization_time": 0.018924713134765625,
+  "total_area": 33882.3,
+  "covered_area": 1264.0,
+  "uncovered_area": 32618.3,
+  "coverage_ratio": 3.7,
+  "total_cost": 1357.6,
+  "cost_per_sqft": 0.04,
+  "total_panels": 32,
+  "panel_summary": {
+    "6x8": 21,
+    "4x6": 10,
+    "4x4": 1
+  },
+  "panel_efficiency": 79.7,
+  "room_count": 9,
+  "rooms": [
+    {
+      "id": "room_0",
+      "type": "open_space",
+      "name": "area 393588.0@ square in. (2733.250@ square ft.), perimeter 265'-@\" automatic save to c:\\users\\holov\\appdata\\local\\temp\\main_draw_10_1 4940 6fadb7ae.sv$ ... command",
+      "dimensions": "196.7x20.6",
+      "area": 4029.65,
+      "position": {
+        "x": 54.5,
+        "y": 172.4
+      },
+      "panel_count": 2,
+      "coverage_ratio": 0.023823408980928863,
+      "uncovered_area": 3933.65,
+      "total_cost": 96.0,
+      "is_load_bearing": true,
+      "span_direction": "vertical",
+      "panels": [
+        {
+          "panel_id": "7fad6886",
+          "size": "6x8",
+          "position": {
+            "x": 54.5,
+            "y": 172.4
+          },
+          "orientation": "horizontal",
+          "room_id": "room_0",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "d8dcc6df",
+          "size": "6x8",
+          "position": {
+            "x": 54.5,
+            "y": 184.4
+          },
+          "orientation": "vertical",
+          "room_id": "room_0",
+          "width": 8,
+          "length": 6,
+          "area": 48,
+          "cost": 48.0
+        }
+      ]
+    },
+    {
+      "id": "room_1",
+      "type": "living",
+      "name": "specify next point or [arc/length/undo/total] <total>: specify next point or [arc/length/undo/total] <total>: specify next point or [arc/length/undo/total] <total>:",
+      "dimensions": "61.0x9.3",
+      "area": 559.945,
+      "position": {
+        "x": 10.4,
+        "y": 159.3
+      },
+      "panel_count": 1,
+      "coverage_ratio": 0.0857227049085178,
+      "uncovered_area": 511.94500000000005,
+      "total_cost": 48.0,
+      "is_load_bearing": false,
+      "span_direction": "vertical",
+      "panels": [
+        {
+          "panel_id": "131e1cb1",
+          "size": "6x8",
+          "position": {
+            "x": 10.4,
+            "y": 159.3
+          },
+          "orientation": "horizontal",
+          "room_id": "room_1",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        }
+      ]
+    },
+    {
+      "id": "room_2",
+      "type": "hallway",
+      "name": "45'-6\" openin,",
+      "dimensions": "2.6x40.5",
+      "area": 59.475,
+      "position": {
+        "x": 269.5,
+        "y": 104.2
+      },
+      "panel_count": 0,
+      "coverage_ratio": 0.0,
+      "uncovered_area": 59.475,
+      "total_cost": 0,
+      "is_load_bearing": true,
+      "span_direction": "vertical",
+      "panels": []
+    },
+    {
+      "id": "room_3",
+      "type": "entry",
+      "name": "7'-6\" l'dry rm\u2014\u2014} 3 46' media room 4-4 vb 45'-6\" openin, 9! entry- 28! garag",
+      "dimensions": "4.1x123.4",
+      "area": 308.26,
+      "position": {
+        "x": 270.4,
+        "y": 30.0
+      },
+      "panel_count": 11,
+      "coverage_ratio": 0.8304677869331084,
+      "uncovered_area": 52.25999999999999,
+      "total_cost": 349.6000000000001,
+      "is_load_bearing": true,
+      "span_direction": "horizontal",
+      "panels": [
+        {
+          "panel_id": "efe8e26a",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 30.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "a91cc564",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 42.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "d164a982",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 54.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "6fcc5dbe",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 66.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "7d0ad579",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 78.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "1e8e7375",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 90.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "d968d5ae",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 102.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "09a9f1c6",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 114.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "a7924c7c",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 126.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "56733909",
+          "size": "4x6",
+          "position": {
+            "x": 270.4,
+            "y": 138.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 6,
+          "area": 24,
+          "cost": 32.400000000000006
+        },
+        {
+          "panel_id": "5eeb47af",
+          "size": "4x4",
+          "position": {
+            "x": 270.4,
+            "y": 146.0
+          },
+          "orientation": "horizontal",
+          "room_id": "room_3",
+          "width": 4,
+          "length": 4,
+          "area": 16,
+          "cost": 25.6
+        }
+      ]
+    },
+    {
+      "id": "room_4",
+      "type": "bedroom",
+      "name": "= rz 3 f = 8 | \u00b0 ) we )) ens 3 ens 3. | we ste = eu media room patio 3 bdrm 2 ber x nz l 2 ens 2 au ties bdrm 3 bdrm 4 l = = primary suite gl tete a ee a 6g lidry rm tes x oe tint ser 2a\" oe er kitchen wir ate el b= entry ens 4 teer le ime = 8 pwdr mech 24 we = > al c) 2| 4 i family room = livins patio 2 ~ garage. : i j patio 1 2 =i 1 i & 40' patio 2- endpoint | 45' family room a 32-6\" meals-living- * bbe pwdr- 7'-6\" entry ) 32' patio yb 24\" <total>: 73! overal",
+      "dimensions": "219.3x133.4",
+      "area": 27540.245,
+      "position": {
+        "x": 48.8,
+        "y": 29.1
+      },
+      "panel_count": 9,
+      "coverage_ratio": 0.015686134963577847,
+      "uncovered_area": 27108.245,
+      "total_cost": 432.0,
+      "is_load_bearing": true,
+      "span_direction": "vertical",
+      "panels": [
+        {
+          "panel_id": "5acbdb22",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 29.1
+          },
+          "orientation": "horizontal",
+          "room_id": "room_4",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "6288fd1c",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 45.1
+          },
+          "orientation": "horizontal",
+          "room_id": "room_4",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "514485f8",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 61.1
+          },
+          "orientation": "horizontal",
+          "room_id": "room_4",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "7708cd19",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 77.1
+          },
+          "orientation": "horizontal",
+          "room_id": "room_4",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "2d056db5",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 93.1
+          },
+          "orientation": "horizontal",
+          "room_id": "room_4",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "9031a865",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 109.1
+          },
+          "orientation": "horizontal",
+          "room_id": "room_4",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "288ce745",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 125.1
+          },
+          "orientation": "horizontal",
+          "room_id": "room_4",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "cd4243a0",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 141.1
+          },
+          "orientation": "horizontal",
+          "room_id": "room_4",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "e583b700",
+          "size": "6x8",
+          "position": {
+            "x": 48.8,
+            "y": 155.1
+          },
+          "orientation": "vertical",
+          "room_id": "room_4",
+          "width": 8,
+          "length": 6,
+          "area": 48,
+          "cost": 48.0
+        }
+      ]
+    },
+    {
+      "id": "room_5",
+      "type": "garage",
+      "name": "i] | by 23 [ ae : = || & o l na ded : | & \u00e9 3 2 es 3 z le 2 5 gs 8 & = 2 =",
+      "dimensions": "8.8x125.9",
+      "area": 745.155,
+      "position": {
+        "x": 36.8,
+        "y": 28.7
+      },
+      "panel_count": 8,
+      "coverage_ratio": 0.5153290255047608,
+      "uncovered_area": 361.155,
+      "total_cost": 384.0,
+      "is_load_bearing": true,
+      "span_direction": "horizontal",
+      "panels": [
+        {
+          "panel_id": "c0214968",
+          "size": "6x8",
+          "position": {
+            "x": 36.8,
+            "y": 28.7
+          },
+          "orientation": "horizontal",
+          "room_id": "room_5",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "4528d8c5",
+          "size": "6x8",
+          "position": {
+            "x": 36.8,
+            "y": 44.7
+          },
+          "orientation": "horizontal",
+          "room_id": "room_5",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "e3dbdf7c",
+          "size": "6x8",
+          "position": {
+            "x": 36.8,
+            "y": 60.7
+          },
+          "orientation": "horizontal",
+          "room_id": "room_5",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "e82e113f",
+          "size": "6x8",
+          "position": {
+            "x": 36.8,
+            "y": 76.7
+          },
+          "orientation": "horizontal",
+          "room_id": "room_5",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "746110e4",
+          "size": "6x8",
+          "position": {
+            "x": 36.8,
+            "y": 92.7
+          },
+          "orientation": "horizontal",
+          "room_id": "room_5",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "b597bad5",
+          "size": "6x8",
+          "position": {
+            "x": 36.8,
+            "y": 108.7
+          },
+          "orientation": "horizontal",
+          "room_id": "room_5",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "da8bb0ab",
+          "size": "6x8",
+          "position": {
+            "x": 36.8,
+            "y": 124.7
+          },
+          "orientation": "horizontal",
+          "room_id": "room_5",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        },
+        {
+          "panel_id": "9fd366d7",
+          "size": "6x8",
+          "position": {
+            "x": 36.8,
+            "y": 140.7
+          },
+          "orientation": "horizontal",
+          "room_id": "room_5",
+          "width": 6,
+          "length": 8,
+          "area": 48,
+          "cost": 48.0
+        }
+      ]
+    },
+    {
+      "id": "room_6",
+      "type": "bedroom",
+      "name": "4 446\" master suite 44 41\u00b0 bdrm 2: 44 \"ens 40'-6\" bdrm 3",
+      "dimensions": "109.8x1.5",
+      "area": 178.09,
+      "position": {
+        "x": 74.7,
+        "y": 25.4
+      },
+      "panel_count": 0,
+      "coverage_ratio": 0.0,
+      "uncovered_area": 178.09,
+      "total_cost": 0,
+      "is_load_bearing": true,
+      "span_direction": "vertical",
+      "panels": []
+    },
+    {
+      "id": "room_7",
+      "type": "primary_suite",
+      "name": "78! overal",
+      "dimensions": "195.2x1.5",
+      "area": 369.885,
+      "position": {
+        "x": 73.5,
+        "y": 23.0
+      },
+      "panel_count": 0,
+      "coverage_ratio": 0.0,
+      "uncovered_area": 369.885,
+      "total_cost": 0,
+      "is_load_bearing": true,
+      "span_direction": "vertical",
+      "panels": []
+    },
+    {
+      "id": "room_8",
+      "type": "hallway",
+      "name": "luna",
+      "dimensions": "20.3x6.5",
+      "area": 91.59,
+      "position": {
+        "x": 148.7,
+        "y": 6.1
+      },
+      "panel_count": 1,
+      "coverage_ratio": 0.5240746806419915,
+      "uncovered_area": 43.59,
+      "total_cost": 48.0,
+      "is_load_bearing": true,
+      "span_direction": "horizontal",
+      "panels": [
+        {
+          "panel_id": "e3b0a2b8",
+          "size": "6x8",
+          "position": {
+            "x": 148.7,
+            "y": 6.1
+          },
+          "orientation": "vertical",
+          "room_id": "room_8",
+          "width": 8,
+          "length": 6,
+          "area": 48,
+          "cost": 48.0
+        }
+      ]
+    }
+  ],
+  "structural_compliance": false,
+  "violations": [
+    "[MAJOR] Panel 7fad6886 lacks adequate edge support",
+    "[MAJOR] Panel 131e1cb1 lacks adequate edge support",
+    "[MAJOR] Panel efe8e26a lacks adequate edge support",
+    "[MAJOR] Panel a91cc564 lacks adequate edge support",
+    "[MAJOR] Panel 6fcc5dbe lacks adequate edge support",
+    "[MAJOR] Panel a7924c7c lacks adequate edge support",
+    "[MAJOR] Panel 56733909 lacks adequate edge support",
+    "[MAJOR] Panel 5eeb47af lacks adequate edge support",
+    "[MAJOR] Panel 6288fd1c lacks adequate edge support",
+    "[MAJOR] Panel 514485f8 lacks adequate edge support",
+    "[MAJOR] Panel 9031a865 lacks adequate edge support",
+    "[MAJOR] Panel 288ce745 lacks adequate edge support",
+    "[MAJOR] Panel cd4243a0 lacks adequate edge support",
+    "[MAJOR] Panel e583b700 lacks adequate edge support",
+    "[MAJOR] Panel 4528d8c5 lacks adequate edge support",
+    "[MAJOR] Panel e3dbdf7c lacks adequate edge support",
+    "[MAJOR] Panel da8bb0ab lacks adequate edge support",
+    "[MAJOR] Panel 9fd366d7 lacks adequate edge support",
+    "[MINOR] Panel orientation conflicts with room span direction",
+    "[MAJOR] Panel e3b0a2b8 lacks adequate edge support",
+    "[MAJOR] Load-bearing room room_0 has insufficient coverage (2.4%)",
+    "[CRITICAL] Room room_0 span (20.6ft) exceeds maximum (7.2ft)",
+    "[MINOR] Uneven panel distribution in room room_0",
+    "[CRITICAL] Room room_1 span (9.3ft) exceeds maximum (7.6ft)",
+    "[MINOR] Uneven panel distribution in room room_1",
+    "[MAJOR] Load-bearing room room_2 has insufficient coverage (0.0%)",
+    "[CRITICAL] Room room_2 span (40.5ft) exceeds maximum (7.2ft)",
+    "[MAJOR] Load-bearing room room_3 has insufficient coverage (83.0%)",
+    "[MAJOR] Load-bearing room room_4 has insufficient coverage (1.6%)",
+    "[CRITICAL] Room room_4 span (133.4ft) exceeds maximum (7.2ft)",
+    "[MINOR] Uneven panel distribution in room room_4",
+    "[MAJOR] Load-bearing room room_5 has insufficient coverage (51.5%)",
+    "[CRITICAL] Room room_5 span (8.8ft) exceeds maximum (5.0ft)",
+    "[MINOR] Uneven panel distribution in room room_5",
+    "[MAJOR] Load-bearing room room_6 has insufficient coverage (0.0%)",
+    "[MAJOR] Load-bearing room room_7 has insufficient coverage (0.0%)",
+    "[MAJOR] Load-bearing room room_8 has insufficient coverage (52.4%)",
+    "[CRITICAL] Room room_8 span (20.3ft) exceeds maximum (7.2ft)",
+    "[MINOR] Uneven panel distribution in room room_8",
+    "[MAJOR] Total coverage (3.7%) below minimum (98.0%)",
+    "[MAJOR] Estimated deflection exceeds limit"
+  ],
+  "metrics": {
+    "iterations": 9,
+    "fitness": 51.70851060521545,
+    "total_panels": 32,
+    "unique_panel_types": 3,
+    "uncovered_area": 32618.295
+  }
+}

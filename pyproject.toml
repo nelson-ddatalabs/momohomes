@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "floorplan-optimizer"
+version = "1.0.0"
+description = "Floor Plan Panel/Joist Optimization System"
+authors = ["Nelson D'Souza"]
+readme = "README.md"
+packages = [{include = "*"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+numpy = "^1.21.0"
+opencv-python = "^4.5.0"
+Pillow = "^9.0.0"
+matplotlib = "^3.4.0"
+seaborn = "^0.11.0"
+pytesseract = "^0.3.8"
+pandas = "^1.3.0"
+scipy = "^1.7.0"
+scikit-image = "^0.18.0"
+jinja2 = "^3.0.0"
+ezdxf = "^0.17.0"
+scikit-learn = "^1.0.0"
+networkx = "^2.6"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^6.2.0"
+black = "^21.6b0"
+flake8 = "^3.9.0"
+mypy = "^0.910"
+coverage = "^5.5"
+
+[tool.poetry.group.docs.dependencies]
+sphinx = "^4.0.0"
+sphinx-rtd-theme = "^0.5.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+floorplan-optimize = "main:main"

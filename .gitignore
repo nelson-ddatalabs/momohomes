@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+.env
+
+# Virtual environments
+bin/
+lib/
+lib64/
+include/
+share/
+pyvenv.cfg
+
+# Poetry
+poetry.lock
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Output directories
+output_*/
+cassette_outputs/
+visualizations/
+temp/
+test_outputs/
+
+# Test files
+test_*.png
+test_*.json
+*.test.py
+
+# Logs
+*.log
+logs/
+
+# Images generated during testing
+numbered_cardinal_edges.png
+binary.png
+cardinal_edges.png
+cassette_layout.png
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Documentation builds
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Cache
+.cache/
+.pytest_cache/
+
+# OS files
+Thumbs.db
+.DS_Store

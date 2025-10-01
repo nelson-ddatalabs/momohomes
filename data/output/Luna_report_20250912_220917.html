@@ -1,0 +1,253 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Floor Plan Optimization Report - Luna</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
+                .header { background-color: #2c3e50; color: white; padding: 20px; border-radius: 5px; }
+                .section { background-color: white; margin: 20px 0; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+                .metric { display: inline-block; margin: 10px 20px; }
+                .metric-value { font-size: 24px; font-weight: bold; color: #2c3e50; }
+                .metric-label { font-size: 12px; color: #7f8c8d; }
+                table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                th { background-color: #34495e; color: white; padding: 10px; text-align: left; }
+                td { padding: 8px; border-bottom: 1px solid #ecf0f1; }
+                tr:hover { background-color: #f8f9fa; }
+                .success { color: #27ae60; font-weight: bold; }
+                .warning { color: #f39c12; font-weight: bold; }
+                .error { color: #e74c3c; font-weight: bold; }
+                .progress-bar { width: 100%; height: 30px; background-color: #ecf0f1; border-radius: 15px; overflow: hidden; }
+                .progress-fill { height: 100%; background-color: #3498db; text-align: center; line-height: 30px; color: white; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>Floor Plan Optimization Report</h1>
+                <p>Luna | Generated: 2025-09-12 22:09:17</p>
+            </div>
+            
+            <div class="section">
+                <h2>Executive Summary</h2>
+                <div class="metric">
+                    <div class="metric-value">33882.3 sq ft</div>
+                    <div class="metric-label">Total Area</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">3.7%</div>
+                    <div class="metric-label">Coverage</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">$1357.6</div>
+                    <div class="metric-label">Total Cost</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">$0.04/sq ft</div>
+                    <div class="metric-label">Cost per sq ft</div>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 3.7%">
+                        Coverage: 3.7%
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Panel Requirements</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Panel Size</th>
+                            <th>Quantity</th>
+                            <th>Unit Cost</th>
+                            <th>Total Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td>6x8</td>
+                            <td>21</td>
+                            <td>$48.0</td>
+                            <td>$1008.0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>4x6</td>
+                            <td>10</td>
+                            <td>$32.4</td>
+                            <td>$324.0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>4x4</td>
+                            <td>1</td>
+                            <td>$25.6</td>
+                            <td>$25.6</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h2>Room Details</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Room</th>
+                            <th>Type</th>
+                            <th>Dimensions</th>
+                            <th>Area</th>
+                            <th>Panels</th>
+                            <th>Coverage</th>
+                            <th>Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td>room_0</td>
+                            <td>open_space</td>
+                            <td>196.7x20.6</td>
+                            <td>4029.65 sq ft</td>
+                            <td>2</td>
+                            <td class="error">
+                                2.4%
+                            </td>
+                            <td>$96.0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>room_1</td>
+                            <td>living</td>
+                            <td>61.0x9.3</td>
+                            <td>559.945 sq ft</td>
+                            <td>1</td>
+                            <td class="error">
+                                8.6%
+                            </td>
+                            <td>$48.0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>room_2</td>
+                            <td>hallway</td>
+                            <td>2.6x40.5</td>
+                            <td>59.475 sq ft</td>
+                            <td>0</td>
+                            <td class="error">
+                                0.0%
+                            </td>
+                            <td>$0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>room_3</td>
+                            <td>entry</td>
+                            <td>4.1x123.4</td>
+                            <td>308.26 sq ft</td>
+                            <td>11</td>
+                            <td class="error">
+                                83.0%
+                            </td>
+                            <td>$349.6000000000001</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>room_4</td>
+                            <td>bedroom</td>
+                            <td>219.3x133.4</td>
+                            <td>27540.245 sq ft</td>
+                            <td>9</td>
+                            <td class="error">
+                                1.6%
+                            </td>
+                            <td>$432.0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>room_5</td>
+                            <td>garage</td>
+                            <td>8.8x125.9</td>
+                            <td>745.155 sq ft</td>
+                            <td>8</td>
+                            <td class="error">
+                                51.5%
+                            </td>
+                            <td>$384.0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>room_6</td>
+                            <td>bedroom</td>
+                            <td>109.8x1.5</td>
+                            <td>178.09 sq ft</td>
+                            <td>0</td>
+                            <td class="error">
+                                0.0%
+                            </td>
+                            <td>$0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>room_7</td>
+                            <td>primary_suite</td>
+                            <td>195.2x1.5</td>
+                            <td>369.885 sq ft</td>
+                            <td>0</td>
+                            <td class="error">
+                                0.0%
+                            </td>
+                            <td>$0</td>
+                        </tr>
+                        
+                        <tr>
+                            <td>room_8</td>
+                            <td>hallway</td>
+                            <td>20.3x6.5</td>
+                            <td>91.59 sq ft</td>
+                            <td>1</td>
+                            <td class="error">
+                                52.4%
+                            </td>
+                            <td>$48.0</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h2>Structural Compliance</h2>
+                <p class="error">
+                    Status: ✗ NON-COMPLIANT
+                </p>
+                
+                <h3>Violations:</h3>
+                <ul>
+                    
+                    <li>[MAJOR] Panel 7fad6886 lacks adequate edge support</li>
+                    
+                    <li>[MAJOR] Panel 131e1cb1 lacks adequate edge support</li>
+                    
+                    <li>[MAJOR] Panel efe8e26a lacks adequate edge support</li>
+                    
+                    <li>[MAJOR] Panel a91cc564 lacks adequate edge support</li>
+                    
+                    <li>[MAJOR] Panel 6fcc5dbe lacks adequate edge support</li>
+                    
+                </ul>
+                
+            </div>
+            
+            <div class="section">
+                <h2>Optimization Details</h2>
+                <p>Strategy: <strong>hybrid</strong></p>
+                <p>Processing Time: <strong>0.02 seconds</strong></p>
+                <p>Panel Efficiency: <strong>79.7%</strong></p>
+            </div>
+        </body>
+        </html>
+        

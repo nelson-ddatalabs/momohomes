@@ -1,0 +1,693 @@
+{
+  "floor_plan": "floorplans/Bungalow-Conditioned.png",
+  "scale_factor": 0.03398090615927399,
+  "edges": [
+    {
+      "index": 0,
+      "cardinal_direction": "E",
+      "pixel_length": 755.0,
+      "measurement": 23.5
+    },
+    {
+      "index": 1,
+      "cardinal_direction": "S",
+      "pixel_length": 160.00312496948303,
+      "measurement": 6.5
+    },
+    {
+      "index": 2,
+      "cardinal_direction": "E",
+      "pixel_length": 522.0,
+      "measurement": 18.5
+    },
+    {
+      "index": 3,
+      "cardinal_direction": "S",
+      "pixel_length": 290.0,
+      "measurement": 8
+    },
+    {
+      "index": 4,
+      "cardinal_direction": "E",
+      "pixel_length": 58.008620049092706,
+      "measurement": 0.5
+    },
+    {
+      "index": 5,
+      "cardinal_direction": "S",
+      "pixel_length": 172.0,
+      "measurement": 8
+    },
+    {
+      "index": 6,
+      "cardinal_direction": "W",
+      "pixel_length": 58.008620049092706,
+      "measurement": 0.5
+    },
+    {
+      "index": 7,
+      "cardinal_direction": "S",
+      "pixel_length": 289.0,
+      "measurement": 8
+    },
+    {
+      "index": 8,
+      "cardinal_direction": "W",
+      "pixel_length": 580.0,
+      "measurement": 12.5
+    },
+    {
+      "index": 9,
+      "cardinal_direction": "S",
+      "pixel_length": 160.00312496948303,
+      "measurement": 6.5
+    },
+    {
+      "index": 10,
+      "cardinal_direction": "W",
+      "pixel_length": 462.0,
+      "measurement": 21
+    },
+    {
+      "index": 11,
+      "cardinal_direction": "N",
+      "pixel_length": 449.0,
+      "measurement": 15.5
+    },
+    {
+      "index": 12,
+      "cardinal_direction": "W",
+      "pixel_length": 250.0,
+      "measurement": 8.5
+    },
+    {
+      "index": 13,
+      "cardinal_direction": "N",
+      "pixel_length": 633.0639778095102,
+      "measurement": 21.5
+    }
+  ],
+  "measurements": {
+    "0": 23.5,
+    "1": 6.5,
+    "2": 18.5,
+    "3": 8,
+    "4": 0.5,
+    "5": 8,
+    "6": 0.5,
+    "7": 8,
+    "8": 12.5,
+    "9": 6.5,
+    "10": 21,
+    "11": 15.5,
+    "12": 8.5,
+    "13": 21.5
+  },
+  "polygon": [
+    [
+      0.0,
+      37.0
+    ],
+    [
+      23.5,
+      37.0
+    ],
+    [
+      23.5,
+      30.5
+    ],
+    [
+      42.0,
+      30.5
+    ],
+    [
+      42.0,
+      22.5
+    ],
+    [
+      42.5,
+      22.5
+    ],
+    [
+      42.5,
+      14.5
+    ],
+    [
+      42.0,
+      14.5
+    ],
+    [
+      42.0,
+      6.5
+    ],
+    [
+      29.5,
+      6.5
+    ],
+    [
+      29.5,
+      0.0
+    ],
+    [
+      8.5,
+      0.0
+    ],
+    [
+      8.5,
+      15.5
+    ],
+    [
+      0.0,
+      15.5
+    ]
+  ],
+  "cassettes": [
+    {
+      "x": 8.5,
+      "y": 0.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.5,
+      "y": 0.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 24.5,
+      "y": 0.0,
+      "width": 4,
+      "height": 8,
+      "size": "4x8",
+      "area": 32,
+      "weight": 332.8
+    },
+    {
+      "x": 8.5,
+      "y": 6.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.5,
+      "y": 6.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 28.5,
+      "y": 6.5,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 36.5,
+      "y": 6.5,
+      "width": 5,
+      "height": 8,
+      "size": "5x8",
+      "area": 40,
+      "weight": 416.0
+    },
+    {
+      "x": 24.5,
+      "y": 8.0,
+      "width": 4,
+      "height": 8,
+      "size": "4x8",
+      "area": 32,
+      "weight": 332.8
+    },
+    {
+      "x": 8.5,
+      "y": 12.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.5,
+      "y": 12.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 28.5,
+      "y": 12.5,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 36.5,
+      "y": 14.5,
+      "width": 5,
+      "height": 8,
+      "size": "5x8",
+      "area": 40,
+      "weight": 416.0
+    },
+    {
+      "x": 0.0,
+      "y": 15.5,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 24.5,
+      "y": 16.0,
+      "width": 4,
+      "height": 8,
+      "size": "4x8",
+      "area": 32,
+      "weight": 332.8
+    },
+    {
+      "x": 8.0,
+      "y": 18.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.0,
+      "y": 18.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 28.5,
+      "y": 18.5,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 0.0,
+      "y": 21.5,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 36.5,
+      "y": 22.5,
+      "width": 5,
+      "height": 6,
+      "size": "5x6",
+      "area": 30,
+      "weight": 312.0
+    },
+    {
+      "x": 8.0,
+      "y": 24.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.0,
+      "y": 24.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 24.0,
+      "y": 24.0,
+      "width": 4,
+      "height": 6,
+      "size": "4x6",
+      "area": 24,
+      "weight": 249.60000000000002
+    },
+    {
+      "x": 28.0,
+      "y": 24.5,
+      "width": 8,
+      "height": 5,
+      "size": "8x5",
+      "area": 40,
+      "weight": 416.0
+    },
+    {
+      "x": 0.0,
+      "y": 27.5,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 8.0,
+      "y": 30.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.0,
+      "y": 30.0,
+      "width": 6,
+      "height": 6,
+      "size": "6x6",
+      "area": 36,
+      "weight": 374.40000000000003
+    },
+    {
+      "x": 0.0,
+      "y": 33.5,
+      "width": 4,
+      "height": 3,
+      "size": "4x3",
+      "area": 12,
+      "weight": 124.80000000000001
+    },
+    {
+      "x": 4.0,
+      "y": 33.5,
+      "width": 4,
+      "height": 3,
+      "size": "4x3",
+      "area": 12,
+      "weight": 124.80000000000001
+    }
+  ],
+  "statistics": {
+    "cassettes": [
+      {
+        "x": 8.5,
+        "y": 0.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.5,
+        "y": 0.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 24.5,
+        "y": 0.0,
+        "width": 4,
+        "height": 8,
+        "size": "4x8",
+        "area": 32,
+        "weight": 332.8
+      },
+      {
+        "x": 8.5,
+        "y": 6.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.5,
+        "y": 6.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 28.5,
+        "y": 6.5,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 36.5,
+        "y": 6.5,
+        "width": 5,
+        "height": 8,
+        "size": "5x8",
+        "area": 40,
+        "weight": 416.0
+      },
+      {
+        "x": 24.5,
+        "y": 8.0,
+        "width": 4,
+        "height": 8,
+        "size": "4x8",
+        "area": 32,
+        "weight": 332.8
+      },
+      {
+        "x": 8.5,
+        "y": 12.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.5,
+        "y": 12.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 28.5,
+        "y": 12.5,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 36.5,
+        "y": 14.5,
+        "width": 5,
+        "height": 8,
+        "size": "5x8",
+        "area": 40,
+        "weight": 416.0
+      },
+      {
+        "x": 0.0,
+        "y": 15.5,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 24.5,
+        "y": 16.0,
+        "width": 4,
+        "height": 8,
+        "size": "4x8",
+        "area": 32,
+        "weight": 332.8
+      },
+      {
+        "x": 8.0,
+        "y": 18.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.0,
+        "y": 18.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 28.5,
+        "y": 18.5,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 0.0,
+        "y": 21.5,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 36.5,
+        "y": 22.5,
+        "width": 5,
+        "height": 6,
+        "size": "5x6",
+        "area": 30,
+        "weight": 312.0
+      },
+      {
+        "x": 8.0,
+        "y": 24.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.0,
+        "y": 24.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 24.0,
+        "y": 24.0,
+        "width": 4,
+        "height": 6,
+        "size": "4x6",
+        "area": 24,
+        "weight": 249.60000000000002
+      },
+      {
+        "x": 28.0,
+        "y": 24.5,
+        "width": 8,
+        "height": 5,
+        "size": "8x5",
+        "area": 40,
+        "weight": 416.0
+      },
+      {
+        "x": 0.0,
+        "y": 27.5,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 8.0,
+        "y": 30.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.0,
+        "y": 30.0,
+        "width": 6,
+        "height": 6,
+        "size": "6x6",
+        "area": 36,
+        "weight": 374.40000000000003
+      },
+      {
+        "x": 0.0,
+        "y": 33.5,
+        "width": 4,
+        "height": 3,
+        "size": "4x3",
+        "area": 12,
+        "weight": 124.80000000000001
+      },
+      {
+        "x": 4.0,
+        "y": 33.5,
+        "width": 4,
+        "height": 3,
+        "size": "4x3",
+        "area": 12,
+        "weight": 124.80000000000001
+      }
+    ],
+    "num_cassettes": 28,
+    "coverage": 0.9357011635027557,
+    "coverage_percent": 93.57011635027557,
+    "gap_percent": 6.4298836497244345,
+    "total_area": 1224.75,
+    "covered_area": 1146,
+    "gap_area": 78.75,
+    "size_distribution": {
+      "6x8": 17,
+      "5x8": 3,
+      "6x6": 1,
+      "4x8": 3,
+      "5x6": 1,
+      "4x6": 1,
+      "3x4": 2
+    },
+    "total_weight": 11918.400000000001,
+    "avg_cassette_area": 40.92857142857143,
+    "meets_requirement": false
+  }
+}

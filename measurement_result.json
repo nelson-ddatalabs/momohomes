@@ -1,0 +1,250 @@
+{
+  "edges": [
+    {
+      "id": 0,
+      "start": [
+        "735",
+        "1544"
+      ],
+      "end": [
+        "1141",
+        "1533"
+      ],
+      "measurement": null,
+      "orientation": "horizontal",
+      "length_pixels": 406.1489874418007
+    },
+    {
+      "id": 1,
+      "start": [
+        "1141",
+        "1533"
+      ],
+      "end": [
+        "1142",
+        "1236"
+      ],
+      "measurement": null,
+      "orientation": "vertical",
+      "length_pixels": 297.00168349691216
+    },
+    {
+      "id": 2,
+      "start": [
+        "1142",
+        "1236"
+      ],
+      "end": [
+        "1945",
+        "1236"
+      ],
+      "measurement": null,
+      "orientation": "horizontal",
+      "length_pixels": 803.0
+    },
+    {
+      "id": 3,
+      "start": [
+        "1945",
+        "1236"
+      ],
+      "end": [
+        "1946",
+        "840"
+      ],
+      "measurement": null,
+      "orientation": "vertical",
+      "length_pixels": 396.0012626242497
+    },
+    {
+      "id": 4,
+      "start": [
+        "1946",
+        "840"
+      ],
+      "end": [
+        "2144",
+        "840"
+      ],
+      "measurement": null,
+      "orientation": "horizontal",
+      "length_pixels": 198.0
+    },
+    {
+      "id": 5,
+      "start": [
+        "2144",
+        "840"
+      ],
+      "end": [
+        "2145",
+        "951"
+      ],
+      "measurement": null,
+      "orientation": "vertical",
+      "length_pixels": 111.00450441310929
+    },
+    {
+      "id": 6,
+      "start": [
+        "2145",
+        "951"
+      ],
+      "end": [
+        "2552",
+        "951"
+      ],
+      "measurement": null,
+      "orientation": "horizontal",
+      "length_pixels": 407.0
+    },
+    {
+      "id": 7,
+      "start": [
+        "2552",
+        "951"
+      ],
+      "end": [
+        "2552",
+        "717"
+      ],
+      "measurement": null,
+      "orientation": "vertical",
+      "length_pixels": 234.0
+    },
+    {
+      "id": 8,
+      "start": [
+        "2552",
+        "717"
+      ],
+      "end": [
+        "2675",
+        "716"
+      ],
+      "measurement": null,
+      "orientation": "horizontal",
+      "length_pixels": 123.00406497347964
+    },
+    {
+      "id": 9,
+      "start": [
+        "2675",
+        "716"
+      ],
+      "end": [
+        "2675",
+        "297"
+      ],
+      "measurement": null,
+      "orientation": "vertical",
+      "length_pixels": 419.0
+    },
+    {
+      "id": 10,
+      "start": [
+        "2675",
+        "297"
+      ],
+      "end": [
+        "747",
+        "297"
+      ],
+      "measurement": 40.5,
+      "orientation": "horizontal",
+      "length_pixels": 1928.0
+    },
+    {
+      "id": 11,
+      "start": [
+        "747",
+        "297"
+      ],
+      "end": [
+        "735",
+        "1544"
+      ],
+      "measurement": null,
+      "orientation": "vertical",
+      "length_pixels": 1247.057737235931
+    }
+  ],
+  "measurements": [
+    {
+      "text": "40'-6\"",
+      "value": 40.5,
+      "x": 1679,
+      "y": 262,
+      "bbox": [
+        1662,
+        257,
+        35,
+        10
+      ]
+    },
+    {
+      "text": "41'",
+      "value": 41.0,
+      "x": 2483,
+      "y": 262,
+      "bbox": [
+        2475,
+        257,
+        17,
+        10
+      ]
+    },
+    {
+      "text": "40'",
+      "value": 40.0,
+      "x": 597,
+      "y": 1572,
+      "bbox": [
+        589,
+        1567,
+        17,
+        10
+      ]
+    },
+    {
+      "text": "32-6\"",
+      "value": 32.5,
+      "x": 1489,
+      "y": 1572,
+      "bbox": [
+        1471,
+        1567,
+        36,
+        10
+      ]
+    },
+    {
+      "text": "7'-6\"",
+      "value": 7.5,
+      "x": 2428,
+      "y": 1572,
+      "bbox": [
+        2414,
+        1567,
+        28,
+        10
+      ]
+    },
+    {
+      "text": "32'",
+      "value": 32.0,
+      "x": 1514,
+      "y": 1597,
+      "bbox": [
+        1505,
+        1592,
+        18,
+        10
+      ]
+    }
+  ],
+  "scale_factor": 0.021006224066390043,
+  "perimeter_feet": 40.5,
+  "num_edges": 12,
+  "num_measurements": 6
+}

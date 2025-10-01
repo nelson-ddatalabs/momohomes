@@ -1,0 +1,146 @@
+[
+  {
+    "timestamp": "2025-09-12 22:09:17",
+    "floor_plan": "Luna",
+    "strategy": "hybrid",
+    "coverage": 0.03730561935075531,
+    "cost_per_sqft": 0.040068124074830236,
+    "optimization_time": 0.018924713134765625,
+    "total_panels": 32
+  },
+  {
+    "timestamp": "2025-09-12 22:11:27",
+    "floor_plan": "Luna",
+    "strategy": "hybrid",
+    "coverage": 0.03730561935075531,
+    "cost_per_sqft": 0.040068124074830236,
+    "optimization_time": 0.018834829330444336,
+    "total_panels": 32
+  },
+  {
+    "timestamp": "2025-09-13 00:20:17",
+    "floor_plan": "Luna",
+    "strategy": "maximum_coverage",
+    "coverage": 0.9036190476190477,
+    "cost_per_sqft": 0.9971047619047619,
+    "optimization_time": 0.033972978591918945,
+    "total_panels": 65
+  },
+  {
+    "timestamp": "2025-09-13 00:20:40",
+    "floor_plan": "Luna",
+    "strategy": "maximum_coverage",
+    "coverage": 0.9036190476190477,
+    "cost_per_sqft": 0.9971047619047619,
+    "optimization_time": 0.03321695327758789,
+    "total_panels": 65
+  },
+  {
+    "timestamp": "2025-09-13 12:14:50",
+    "floor_plan": "Luna",
+    "strategy": "enhanced_blf",
+    "coverage": 0.036571428571428574,
+    "cost_per_sqft": 1.6000000000000003,
+    "optimization_time": 0.6994428634643555,
+    "total_panels": 6
+  },
+  {
+    "timestamp": "2025-09-13 12:19:49",
+    "floor_plan": "Luna",
+    "strategy": "enhanced_blf",
+    "coverage": 0.036571428571428574,
+    "cost_per_sqft": 1.6000000000000003,
+    "optimization_time": 0.6976528167724609,
+    "total_panels": 6
+  },
+  {
+    "timestamp": "2025-09-13 13:16:46",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 0.036571428571428574,
+    "cost_per_sqft": 1.0,
+    "optimization_time": 0.06581807136535645,
+    "total_panels": 2
+  },
+  {
+    "timestamp": "2025-09-13 13:18:03",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 0.036571428571428574,
+    "cost_per_sqft": 1.0,
+    "optimization_time": 0.06793618202209473,
+    "total_panels": 2
+  },
+  {
+    "timestamp": "2025-09-13 13:22:14",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 0.8365714285714285,
+    "cost_per_sqft": 1.0920765027322406,
+    "optimization_time": 0.3162498474121094,
+    "total_panels": 58
+  },
+  {
+    "timestamp": "2025-09-13 13:31:43",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 0.8365714285714285,
+    "cost_per_sqft": 1.0920765027322406,
+    "optimization_time": 0.3153650760650635,
+    "total_panels": 58
+  },
+  {
+    "timestamp": "2025-09-13 13:34:37",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 0.7573333333333333,
+    "cost_per_sqft": 1.102917505030181,
+    "optimization_time": 6.6909239292144775,
+    "total_panels": 54
+  },
+  {
+    "timestamp": "2025-09-13 13:39:34",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 0.8365714285714285,
+    "cost_per_sqft": 1.0920765027322406,
+    "optimization_time": 1.341459035873413,
+    "total_panels": 58
+  },
+  {
+    "timestamp": "2025-09-13 13:40:32",
+    "floor_plan": "Luna",
+    "strategy": "maximum_coverage",
+    "coverage": 0.9036190476190477,
+    "cost_per_sqft": 0.9971047619047619,
+    "optimization_time": 0.02240467071533203,
+    "total_panels": 65
+  },
+  {
+    "timestamp": "2025-09-13 14:07:17",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 2.8464761904761904,
+    "cost_per_sqft": 1.294218415417559,
+    "optimization_time": 13.114030838012695,
+    "total_panels": 295
+  },
+  {
+    "timestamp": "2025-09-13 14:09:20",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 0.8457142857142858,
+    "cost_per_sqft": 1.094864864864865,
+    "optimization_time": 1.6772501468658447,
+    "total_panels": 59
+  },
+  {
+    "timestamp": "2025-09-13 14:11:25",
+    "floor_plan": "Luna",
+    "strategy": "simple_blf",
+    "coverage": 0.8457142857142858,
+    "cost_per_sqft": 1.094864864864865,
+    "optimization_time": 2.4503049850463867,
+    "total_panels": 59
+  }
+]

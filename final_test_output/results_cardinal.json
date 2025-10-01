@@ -1,0 +1,1103 @@
+{
+  "floor_plan": "/Users/nelsondsouza/Dropbox (Personal)/Mac/Documents/products/momohomes/floorplans/Luna-Conditioned.png",
+  "scale_factor": 0.03943278943278944,
+  "edges": [
+    {
+      "index": 0,
+      "cardinal_direction": "N",
+      "pixel_length": 1236.0,
+      "measurement": 50.0
+    },
+    {
+      "index": 1,
+      "cardinal_direction": "E",
+      "pixel_length": 1928.0,
+      "measurement": 78.0
+    },
+    {
+      "index": 2,
+      "cardinal_direction": "S",
+      "pixel_length": 419.0,
+      "measurement": 16.0
+    },
+    {
+      "index": 3,
+      "cardinal_direction": "W",
+      "pixel_length": 123.00406497347964,
+      "measurement": 7.5
+    },
+    {
+      "index": 4,
+      "cardinal_direction": "S",
+      "pixel_length": 234.0,
+      "measurement": 9.0
+    },
+    {
+      "index": 5,
+      "cardinal_direction": "W",
+      "pixel_length": 407.0,
+      "measurement": 15.0
+    },
+    {
+      "index": 6,
+      "cardinal_direction": "N",
+      "pixel_length": 111.00450441310929,
+      "measurement": 4.0
+    },
+    {
+      "index": 7,
+      "cardinal_direction": "W",
+      "pixel_length": 198.0,
+      "measurement": 8.0
+    },
+    {
+      "index": 8,
+      "cardinal_direction": "S",
+      "pixel_length": 396.0012626242497,
+      "measurement": 15.0
+    },
+    {
+      "index": 9,
+      "cardinal_direction": "W",
+      "pixel_length": 803.0,
+      "measurement": 32.5
+    },
+    {
+      "index": 10,
+      "cardinal_direction": "S",
+      "pixel_length": 297.00168349691216,
+      "measurement": 14.0
+    },
+    {
+      "index": 11,
+      "cardinal_direction": "W",
+      "pixel_length": 394.0,
+      "measurement": 15.0
+    }
+  ],
+  "measurements": {
+    "0": 50.0,
+    "1": 78.0,
+    "2": 16.0,
+    "3": 7.5,
+    "4": 9.0,
+    "5": 15.0,
+    "6": 4.0,
+    "7": 8.0,
+    "8": 15.0,
+    "9": 32.5,
+    "10": 14.0,
+    "11": 15.0
+  },
+  "polygon": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      50.0
+    ],
+    [
+      78.0,
+      50.0
+    ],
+    [
+      78.0,
+      34.0
+    ],
+    [
+      70.5,
+      34.0
+    ],
+    [
+      70.5,
+      25.0
+    ],
+    [
+      55.5,
+      25.0
+    ],
+    [
+      55.5,
+      29.0
+    ],
+    [
+      47.5,
+      29.0
+    ],
+    [
+      47.5,
+      14.0
+    ],
+    [
+      15.0,
+      14.0
+    ],
+    [
+      15.0,
+      0.0
+    ]
+  ],
+  "cassettes": [
+    {
+      "x": 0.0,
+      "y": 14.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 8.0,
+      "y": 14.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.0,
+      "y": 14.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 24.0,
+      "y": 14.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 32.0,
+      "y": 14.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 40.0,
+      "y": 14.0,
+      "width": 6,
+      "height": 8,
+      "size": "6x8",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 0.0,
+      "y": 20.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 8.0,
+      "y": 20.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.0,
+      "y": 20.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 24.0,
+      "y": 20.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 32.0,
+      "y": 20.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 40.0,
+      "y": 22.0,
+      "width": 6,
+      "height": 8,
+      "size": "6x8",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 55.5,
+      "y": 25.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 63.5,
+      "y": 25.0,
+      "width": 6,
+      "height": 8,
+      "size": "6x8",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 0.0,
+      "y": 26.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 8.0,
+      "y": 26.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.0,
+      "y": 26.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 24.0,
+      "y": 26.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 32.0,
+      "y": 26.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 46.0,
+      "y": 29.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 40.0,
+      "y": 30.0,
+      "width": 6,
+      "height": 8,
+      "size": "6x8",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 54.0,
+      "y": 31.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 0.0,
+      "y": 32.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 8.0,
+      "y": 32.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.0,
+      "y": 32.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 24.0,
+      "y": 32.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 32.0,
+      "y": 32.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 62.0,
+      "y": 33.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 70.0,
+      "y": 34.0,
+      "width": 6,
+      "height": 8,
+      "size": "6x8",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 46.0,
+      "y": 35.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 54.0,
+      "y": 37.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 0.0,
+      "y": 38.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 8.0,
+      "y": 38.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 16.0,
+      "y": 38.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 24.0,
+      "y": 38.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 32.0,
+      "y": 38.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 40.0,
+      "y": 38.0,
+      "width": 6,
+      "height": 8,
+      "size": "6x8",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 62.0,
+      "y": 39.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 46.0,
+      "y": 41.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 70.0,
+      "y": 42.0,
+      "width": 6,
+      "height": 6,
+      "size": "6x6",
+      "area": 36,
+      "weight": 374.40000000000003
+    },
+    {
+      "x": 54.0,
+      "y": 43.0,
+      "width": 8,
+      "height": 6,
+      "size": "8x6",
+      "area": 48,
+      "weight": 499.20000000000005
+    },
+    {
+      "x": 0.0,
+      "y": 44.0,
+      "width": 8,
+      "height": 5,
+      "size": "8x5",
+      "area": 40,
+      "weight": 416.0
+    },
+    {
+      "x": 8.0,
+      "y": 44.0,
+      "width": 8,
+      "height": 5,
+      "size": "8x5",
+      "area": 40,
+      "weight": 416.0
+    },
+    {
+      "x": 16.0,
+      "y": 44.0,
+      "width": 8,
+      "height": 5,
+      "size": "8x5",
+      "area": 40,
+      "weight": 416.0
+    },
+    {
+      "x": 24.0,
+      "y": 44.0,
+      "width": 8,
+      "height": 5,
+      "size": "8x5",
+      "area": 40,
+      "weight": 416.0
+    },
+    {
+      "x": 32.0,
+      "y": 44.0,
+      "width": 8,
+      "height": 5,
+      "size": "8x5",
+      "area": 40,
+      "weight": 416.0
+    },
+    {
+      "x": 62.0,
+      "y": 45.0,
+      "width": 8,
+      "height": 4,
+      "size": "8x4",
+      "area": 32,
+      "weight": 332.8
+    },
+    {
+      "x": 40.0,
+      "y": 46.0,
+      "width": 4,
+      "height": 3,
+      "size": "4x3",
+      "area": 12,
+      "weight": 124.80000000000001
+    },
+    {
+      "x": 44.0,
+      "y": 46.0,
+      "width": 2,
+      "height": 3,
+      "size": "2x3",
+      "area": 6,
+      "weight": 62.400000000000006
+    },
+    {
+      "x": 46.0,
+      "y": 47.0,
+      "width": 3,
+      "height": 2,
+      "size": "3x2",
+      "area": 6,
+      "weight": 62.400000000000006
+    },
+    {
+      "x": 49.0,
+      "y": 47.0,
+      "width": 3,
+      "height": 2,
+      "size": "3x2",
+      "area": 6,
+      "weight": 62.400000000000006
+    },
+    {
+      "x": 52.0,
+      "y": 47.0,
+      "width": 2,
+      "height": 2,
+      "size": "2x2",
+      "area": 4,
+      "weight": 41.6
+    }
+  ],
+  "statistics": {
+    "cassettes": [
+      {
+        "x": 0.0,
+        "y": 14.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 8.0,
+        "y": 14.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.0,
+        "y": 14.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 24.0,
+        "y": 14.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 32.0,
+        "y": 14.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 40.0,
+        "y": 14.0,
+        "width": 6,
+        "height": 8,
+        "size": "6x8",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 0.0,
+        "y": 20.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 8.0,
+        "y": 20.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.0,
+        "y": 20.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 24.0,
+        "y": 20.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 32.0,
+        "y": 20.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 40.0,
+        "y": 22.0,
+        "width": 6,
+        "height": 8,
+        "size": "6x8",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 55.5,
+        "y": 25.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 63.5,
+        "y": 25.0,
+        "width": 6,
+        "height": 8,
+        "size": "6x8",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 0.0,
+        "y": 26.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 8.0,
+        "y": 26.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.0,
+        "y": 26.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 24.0,
+        "y": 26.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 32.0,
+        "y": 26.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 46.0,
+        "y": 29.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 40.0,
+        "y": 30.0,
+        "width": 6,
+        "height": 8,
+        "size": "6x8",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 54.0,
+        "y": 31.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 0.0,
+        "y": 32.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 8.0,
+        "y": 32.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.0,
+        "y": 32.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 24.0,
+        "y": 32.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 32.0,
+        "y": 32.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 62.0,
+        "y": 33.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 70.0,
+        "y": 34.0,
+        "width": 6,
+        "height": 8,
+        "size": "6x8",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 46.0,
+        "y": 35.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 54.0,
+        "y": 37.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 0.0,
+        "y": 38.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 8.0,
+        "y": 38.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 16.0,
+        "y": 38.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 24.0,
+        "y": 38.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 32.0,
+        "y": 38.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 40.0,
+        "y": 38.0,
+        "width": 6,
+        "height": 8,
+        "size": "6x8",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 62.0,
+        "y": 39.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 46.0,
+        "y": 41.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 70.0,
+        "y": 42.0,
+        "width": 6,
+        "height": 6,
+        "size": "6x6",
+        "area": 36,
+        "weight": 374.40000000000003
+      },
+      {
+        "x": 54.0,
+        "y": 43.0,
+        "width": 8,
+        "height": 6,
+        "size": "8x6",
+        "area": 48,
+        "weight": 499.20000000000005
+      },
+      {
+        "x": 0.0,
+        "y": 44.0,
+        "width": 8,
+        "height": 5,
+        "size": "8x5",
+        "area": 40,
+        "weight": 416.0
+      },
+      {
+        "x": 8.0,
+        "y": 44.0,
+        "width": 8,
+        "height": 5,
+        "size": "8x5",
+        "area": 40,
+        "weight": 416.0
+      },
+      {
+        "x": 16.0,
+        "y": 44.0,
+        "width": 8,
+        "height": 5,
+        "size": "8x5",
+        "area": 40,
+        "weight": 416.0
+      },
+      {
+        "x": 24.0,
+        "y": 44.0,
+        "width": 8,
+        "height": 5,
+        "size": "8x5",
+        "area": 40,
+        "weight": 416.0
+      },
+      {
+        "x": 32.0,
+        "y": 44.0,
+        "width": 8,
+        "height": 5,
+        "size": "8x5",
+        "area": 40,
+        "weight": 416.0
+      },
+      {
+        "x": 62.0,
+        "y": 45.0,
+        "width": 8,
+        "height": 4,
+        "size": "8x4",
+        "area": 32,
+        "weight": 332.8
+      },
+      {
+        "x": 40.0,
+        "y": 46.0,
+        "width": 4,
+        "height": 3,
+        "size": "4x3",
+        "area": 12,
+        "weight": 124.80000000000001
+      },
+      {
+        "x": 44.0,
+        "y": 46.0,
+        "width": 2,
+        "height": 3,
+        "size": "2x3",
+        "area": 6,
+        "weight": 62.400000000000006
+      },
+      {
+        "x": 46.0,
+        "y": 47.0,
+        "width": 3,
+        "height": 2,
+        "size": "3x2",
+        "area": 6,
+        "weight": 62.400000000000006
+      },
+      {
+        "x": 49.0,
+        "y": 47.0,
+        "width": 3,
+        "height": 2,
+        "size": "3x2",
+        "area": 6,
+        "weight": 62.400000000000006
+      },
+      {
+        "x": 52.0,
+        "y": 47.0,
+        "width": 2,
+        "height": 2,
+        "size": "2x2",
+        "area": 4,
+        "weight": 41.6
+      }
+    ],
+    "num_cassettes": 52,
+    "coverage": 0.9363674673409187,
+    "coverage_percent": 93.63674673409187,
+    "gap_percent": 6.363253265908134,
+    "total_area": 2373.0,
+    "covered_area": 2222,
+    "gap_area": 151.0,
+    "size_distribution": {
+      "6x8": 40,
+      "5x8": 5,
+      "6x6": 1,
+      "4x8": 1,
+      "3x4": 1,
+      "2x3": 3,
+      "2x2": 1
+    },
+    "total_weight": 23108.800000000003,
+    "avg_cassette_area": 42.73076923076923,
+    "meets_requirement": false
+  }
+}

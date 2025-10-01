@@ -1,0 +1,143 @@
+================================================================================
+FLOOR PLAN PANEL OPTIMIZATION REPORT
+================================================================================
+
+Report Generated: 2025-09-12 22:11:27
+Floor Plan: Luna
+Optimization Strategy: hybrid
+Processing Time: 0.02 seconds
+
+EXECUTIVE SUMMARY
+----------------------------------------
+Total Floor Area: 33882.3 sq ft
+Coverage Achieved: 3.7%
+Total Cost: $1357.6
+Cost per Square Foot: $0.04
+Structural Compliance: ✗ FAIL
+
+PANEL REQUIREMENTS
+----------------------------------------
+6x8        :  21 panels
+4x6        :  10 panels
+4x4        :   1 panels
+TOTAL      :  32 panels
+
+COST BREAKDOWN
+----------------------------------------
+6x8        :  21 × $ 48.00 = $ 1008.00
+4x6        :  10 × $ 32.40 = $  324.00
+4x4        :   1 × $ 25.60 = $   25.60
+TOTAL COST                     = $ 1357.60
+
+ROOM-BY-ROOM BREAKDOWN
+----------------------------------------
+
+OPEN_SPACE (ID: room_0)
+  Dimensions: 196.7x20.6
+  Area: 4029.65 sq ft
+  Panels Used: 2
+  Coverage: 2.4%
+  Cost: $96.00
+  ⚠ Uncovered Area: 3933.65 sq ft
+
+LIVING (ID: room_1)
+  Dimensions: 61.0x9.3
+  Area: 559.95 sq ft
+  Panels Used: 1
+  Coverage: 8.6%
+  Cost: $48.00
+  ⚠ Uncovered Area: 511.95 sq ft
+
+HALLWAY (ID: room_2)
+  Dimensions: 2.6x40.5
+  Area: 59.48 sq ft
+  Panels Used: 0
+  Coverage: 0.0%
+  Cost: $0.00
+  ⚠ Uncovered Area: 59.48 sq ft
+
+ENTRY (ID: room_3)
+  Dimensions: 4.1x123.4
+  Area: 308.26 sq ft
+  Panels Used: 11
+  Coverage: 83.0%
+  Cost: $349.60
+  ⚠ Uncovered Area: 52.26 sq ft
+
+BEDROOM (ID: room_4)
+  Dimensions: 219.3x133.4
+  Area: 27540.24 sq ft
+  Panels Used: 9
+  Coverage: 1.6%
+  Cost: $432.00
+  ⚠ Uncovered Area: 27108.24 sq ft
+
+GARAGE (ID: room_5)
+  Dimensions: 8.8x125.9
+  Area: 745.15 sq ft
+  Panels Used: 8
+  Coverage: 51.5%
+  Cost: $384.00
+  ⚠ Uncovered Area: 361.15 sq ft
+
+BEDROOM (ID: room_6)
+  Dimensions: 109.8x1.5
+  Area: 178.09 sq ft
+  Panels Used: 0
+  Coverage: 0.0%
+  Cost: $0.00
+  ⚠ Uncovered Area: 178.09 sq ft
+
+PRIMARY_SUITE (ID: room_7)
+  Dimensions: 195.2x1.5
+  Area: 369.88 sq ft
+  Panels Used: 0
+  Coverage: 0.0%
+  Cost: $0.00
+  ⚠ Uncovered Area: 369.88 sq ft
+
+HALLWAY (ID: room_8)
+  Dimensions: 20.3x6.5
+  Area: 91.59 sq ft
+  Panels Used: 1
+  Coverage: 52.4%
+  Cost: $48.00
+  ⚠ Uncovered Area: 43.59 sq ft
+
+STRUCTURAL VIOLATIONS
+----------------------------------------
+  • [MAJOR] Panel 71422587 lacks adequate edge support
+  • [MAJOR] Panel 8cb86266 lacks adequate edge support
+  • [MAJOR] Panel 38a2ad66 lacks adequate edge support
+  • [MAJOR] Panel 572710ff lacks adequate edge support
+  • [MAJOR] Panel 733b4341 lacks adequate edge support
+  • [MAJOR] Panel 6b4e4d6e lacks adequate edge support
+  • [MAJOR] Panel 6555f6bd lacks adequate edge support
+  • [MAJOR] Panel 8ccd1528 lacks adequate edge support
+  • [MAJOR] Panel 40b296c3 lacks adequate edge support
+  • [MAJOR] Panel 099f876f lacks adequate edge support
+  ... and 31 more
+
+PERFORMANCE METRICS
+----------------------------------------
+Coverage Ratio: 3.7%
+Panel Efficiency: 79.7%
+Cost Efficiency: $0.04/sq ft
+Optimization Score: 51.71
+
+RECOMMENDATIONS
+----------------------------------------
+1. Coverage is 3.7%. Consider manual adjustment of panels in uncovered areas.
+2. CRITICAL: Structural violations detected. Review panel placement and ensure compliance with load-bearing requirements.
+3. Multiple structural issues found. Consider consulting a structural engineer.
+4. open_space (ID: room_0) has low coverage (2.4%). Review panel placement.
+5. living (ID: room_1) has low coverage (8.6%). Review panel placement.
+6. hallway (ID: room_2) has low coverage (0.0%). Review panel placement.
+7. entry (ID: room_3) has low coverage (83.0%). Review panel placement.
+8. bedroom (ID: room_4) has low coverage (1.6%). Review panel placement.
+9. garage (ID: room_5) has low coverage (51.5%). Review panel placement.
+10. bedroom (ID: room_6) has low coverage (0.0%). Review panel placement.
+
+================================================================================
+END OF REPORT
+================================================================================
