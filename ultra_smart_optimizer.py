@@ -69,40 +69,35 @@ class UltraSmartOptimizer:
         self.polygon = polygon
         self.placed_cassettes = []
 
-        # Enhanced cassette sizes - more variety for better gap filling
-        self.cassette_sizes = [
-            # Primary sizes (largest first)
+        # Enhanced cassette sizes - sorted by area descending (critical for optimal packing)
+        unsorted_sizes = [
             (8, 6, "8x6"),  # 48 sq ft
             (6, 8, "6x8"),  # 48 sq ft
-
-            # Secondary large sizes
             (8, 5, "8x5"),  # 40 sq ft
             (5, 8, "5x8"),  # 40 sq ft
             (6, 6, "6x6"),  # 36 sq ft
-
-            # Medium sizes
             (8, 4, "8x4"),  # 32 sq ft
             (4, 8, "4x8"),  # 32 sq ft
             (6, 5, "6x5"),  # 30 sq ft
             (5, 6, "5x6"),  # 30 sq ft
-
-            # Gap fillers
             (6, 4, "6x4"),  # 24 sq ft
             (4, 6, "4x6"),  # 24 sq ft
             (5, 4, "5x4"),  # 20 sq ft
             (4, 5, "4x5"),  # 20 sq ft
             (4, 4, "4x4"),  # 16 sq ft
-
-            # Small gap fillers
             (4, 3, "4x3"),  # 12 sq ft
             (3, 4, "3x4"),  # 12 sq ft
             (3, 3, "3x3"),  # 9 sq ft
-
-            # Tiny fillers for edges
             (3, 2, "3x2"),  # 6 sq ft
             (2, 3, "2x3"),  # 6 sq ft
             (2, 2, "2x2"),  # 4 sq ft
         ]
+        # Sort by area descending, then by max dimension descending
+        self.cassette_sizes = sorted(
+            unsorted_sizes,
+            key=lambda x: (x[0] * x[1], max(x[0], x[1])),
+            reverse=True
+        )
 
         # Calculate bounds
         self.min_x, self.min_y, self.max_x, self.max_y = self._get_bounds()
@@ -244,28 +239,301 @@ class UltraSmartOptimizer:
 
         return row_cassettes
 
+    def _is_rect_fully_inside(self, x: float, y: float, width: float, height: float) -> bool:
+        """Check if a rectangle is fully inside the polygon."""
+        # Sample points within the rectangle to verify it's inside
+        # Check corners and center
+        test_points = [
+            (x + 0.1, y + 0.1),
+            (x + width - 0.1, y + 0.1),
+            (x + width - 0.1, y + height - 0.1),
+            (x + 0.1, y + height - 0.1),
+            (x + width/2, y + height/2)
+        ]
+
+        for px, py in test_points:
+            if not self._is_point_inside(px, py):
+                return False
+        return True
+
+    def _find_free_rectangles(self) -> List[Tuple[float, float, float, float]]:
+        """
+        Find maximal free rectangular spaces that are inside the polygon.
+        Returns list of (x, y, width, height) tuples.
+        """
+        free_rects = []
+        visited = np.zeros_like(self.occupancy, dtype=bool)
+
+        # Scan for free spaces and expand to maximal rectangles
+        for gy in range(self.grid_height):
+            for gx in range(self.grid_width):
+                if self.occupancy[gy, gx] or visited[gy, gx]:
+                    continue
+
+                # Check if this grid cell is inside polygon
+                x, y = self._grid_to_world(gx, gy)
+                if not self._is_point_inside(x, y):
+                    visited[gy, gx] = True
+                    continue
+
+                # Find maximal rectangle starting from this point
+                # Expand right (but only while staying inside polygon)
+                max_width = 0
+                for gx2 in range(gx, self.grid_width):
+                    if self.occupancy[gy, gx2]:
+                        break
+                    # Check if this position is inside polygon
+                    test_x, test_y = self._grid_to_world(gx2, gy)
+                    if not self._is_point_inside(test_x, test_y):
+                        break
+                    max_width = gx2 - gx + 1
+
+                if max_width == 0:
+                    visited[gy, gx] = True
+                    continue
+
+                # Expand down with same width (but only while staying inside polygon)
+                max_height = 0
+                for gy2 in range(gy, self.grid_height):
+                    # Check if entire row is free AND inside polygon
+                    can_expand = True
+                    for gx2 in range(gx, gx + max_width):
+                        if gx2 >= self.grid_width or self.occupancy[gy2, gx2]:
+                            can_expand = False
+                            break
+                        test_x, test_y = self._grid_to_world(gx2, gy2)
+                        if not self._is_point_inside(test_x, test_y):
+                            can_expand = False
+                            break
+                    if not can_expand:
+                        break
+                    max_height = gy2 - gy + 1
+
+                if max_width > 0 and max_height > 0:
+                    # Convert to world coordinates
+                    x, y = self._grid_to_world(gx, gy)
+                    width = max_width * self.grid_resolution
+                    height = max_height * self.grid_resolution
+
+                    # Final validation: check if rectangle is fully inside
+                    if self._is_rect_fully_inside(x, y, width, height):
+                        free_rects.append((x, y, width, height))
+
+                    # Mark as visited
+                    visited[gy:gy+max_height, gx:gx+max_width] = True
+
+        # Sort by area descending (fill larger gaps first)
+        free_rects.sort(key=lambda r: r[2] * r[3], reverse=True)
+        return free_rects
+
+    def _score_cassette_placement(self, cassette: UltraSmartCassette,
+                                  free_rect: Tuple[float, float, float, float]) -> float:
+        """
+        Score a cassette placement. Higher score = better fit.
+        Considers: area utilization, corner alignment, minimal waste.
+        """
+        fx, fy, fw, fh = free_rect
+
+        # Calculate area utilization
+        free_area = fw * fh
+        cassette_area = cassette.area
+        utilization = cassette_area / free_area if free_area > 0 else 0
+
+        # Bonus for bottom-left positioning (corner-searching strategy)
+        corner_score = 0
+        if abs(cassette.x - fx) < 0.1:  # Aligned with left edge
+            corner_score += 0.1
+        if abs(cassette.y - fy) < 0.1:  # Aligned with bottom edge
+            corner_score += 0.1
+
+        # Penalty for excessive waste
+        waste = free_area - cassette_area
+        waste_penalty = waste / free_area if free_area > 0 else 1.0
+
+        return utilization + corner_score - (waste_penalty * 0.2)
+
+    def _try_place_in_free_rect(self, free_rect: Tuple[float, float, float, float]) -> bool:
+        """
+        Try to place best-fitting cassette in a free rectangle.
+        Uses fine-grained search with expanded offset range.
+        Returns True if placement succeeded.
+        """
+        fx, fy, fw, fh = free_rect
+
+        best_placement = None
+        best_score = -1
+
+        # Try all cassette sizes (smallest to largest for gap filling)
+        for width, height, size_name in reversed(self.cassette_sizes):
+            for w, h, name in [(width, height, size_name), (height, width, f"{height}x{width}")]:
+                # Skip if cassette is larger than free rectangle
+                if w > fw + 0.5 or h > fh + 0.5:
+                    continue
+
+                # Try positions with finer granularity (0.1 ft steps)
+                # Expanded search: from -1.0 to +1.0 ft in 0.1 ft increments
+                search_range = np.arange(-1.0, 1.1, 0.1)
+
+                for dx in search_range:
+                    for dy in search_range:
+                        test_x = fx + dx
+                        test_y = fy + dy
+
+                        # Round to 0.1 ft precision
+                        test_x = round(test_x * 10) / 10
+                        test_y = round(test_y * 10) / 10
+
+                        cassette = UltraSmartCassette(test_x, test_y, w, h, name)
+
+                        if self._is_cassette_valid(cassette, allow_edge_touch=True):
+                            score = self._score_cassette_placement(cassette, free_rect)
+                            if score > best_score:
+                                best_score = score
+                                best_placement = cassette
+
+        # Place the best cassette found
+        if best_placement:
+            self.placed_cassettes.append(best_placement)
+            self._mark_occupied(best_placement)
+            logger.info(f"      ✓ Placed {best_placement.size_name} at ({best_placement.x:.1f}, {best_placement.y:.1f}) "
+                        f"with score {best_score:.2f}")
+            return True
+
+        logger.info(f"      ✗ No cassette fits in this rectangle")
+        return False
+
+    def _aggressive_point_search(self) -> int:
+        """
+        Aggressive point-by-point search for irregular gaps.
+        Uses fine-grained positioning and smaller cassettes.
+        Returns number of cassettes placed.
+        """
+        placements = 0
+
+        # Collect all unoccupied points inside polygon
+        gap_points = []
+        for gy in range(self.grid_height):
+            for gx in range(self.grid_width):
+                if not self.occupancy[gy, gx]:
+                    x, y = self._grid_to_world(gx, gy)
+                    if self._is_point_inside(x, y):
+                        gap_points.append((x, y))
+
+        if not gap_points:
+            return 0
+
+        logger.info(f"  Aggressive search: Found {len(gap_points)} gap points")
+
+        # Try to fill each gap point
+        attempts = 0
+        valid_checks_failed = 0
+
+        for gx, gy in gap_points[:50]:  # Limit to first 50 points to avoid excessive runtime
+            # Try smallest cassettes first (better for irregular gaps)
+            for width, height, size_name in reversed(self.cassette_sizes):
+                placed = False
+
+                for w, h, name in [(width, height, size_name), (height, width, f"{height}x{width}")]:
+                    # Skip large cassettes for irregular gaps
+                    if w * h > 12:  # Only try cassettes <= 12 sq ft
+                        continue
+
+                    # Fine-grained search around this point
+                    # Try offsets from -2.0 to +2.0 ft in 0.25 ft steps
+                    search_offsets = np.arange(-2.0, 2.25, 0.25)
+
+                    best_cassette = None
+                    best_coverage = 0
+
+                    for dx in search_offsets:
+                        for dy in search_offsets:
+                            test_x = gx + dx
+                            test_y = gy + dy
+
+                            # Round to 0.25 ft precision
+                            test_x = round(test_x * 4) / 4
+                            test_y = round(test_y * 4) / 4
+
+                            cassette = UltraSmartCassette(test_x, test_y, w, h, name)
+                            attempts += 1
+
+                            if self._is_cassette_valid(cassette, allow_edge_touch=True):
+                                # Count how many currently empty grid cells it would cover
+                                gx1, gy1 = self._world_to_grid(cassette.x, cassette.y)
+                                gx2, gy2 = self._world_to_grid(cassette.x + cassette.width,
+                                                               cassette.y + cassette.height)
+                                gx1, gy1 = max(0, gx1), max(0, gy1)
+                                gx2, gy2 = min(self.grid_width, gx2), min(self.grid_height, gy2)
+
+                                coverage = np.sum(~self.occupancy[gy1:gy2, gx1:gx2])
+                                if coverage > best_coverage:
+                                    best_coverage = coverage
+                                    best_cassette = cassette
+                            else:
+                                valid_checks_failed += 1
+
+                    if best_cassette:
+                        self.placed_cassettes.append(best_cassette)
+                        self._mark_occupied(best_cassette)
+                        logger.info(f"      ✓ Placed {best_cassette.size_name} at ({best_cassette.x:.1f}, {best_cassette.y:.1f})")
+                        placements += 1
+                        placed = True
+                        break
+
+                if placed:
+                    break
+
+        logger.info(f"  Search stats: {attempts} positions tried, {valid_checks_failed} failed validation")
+        return placements
+
     def _fill_gaps(self):
         """
         Intelligently fill remaining gaps with appropriate cassettes.
+        Enhanced with Maximal Rectangles algorithm and corner-searching strategy.
         """
-        # Scan for gaps
-        for gy in range(self.grid_height):
-            for gx in range(self.grid_width):
-                if self.occupancy[gy, gx]:
+        max_passes = 5
+        pass_num = 0
+
+        while pass_num < max_passes:
+            # Find all maximal free rectangles
+            free_rects = self._find_free_rectangles()
+
+            if not free_rects:
+                logger.info(f"  Pass {pass_num + 1}: No free rectangles found, trying aggressive search...")
+                # Fall back to aggressive point-by-point search
+                placements_made = self._aggressive_point_search()
+                logger.info(f"  Pass {pass_num + 1}: Aggressive search placed {placements_made} cassettes")
+
+                if placements_made == 0:
+                    break
+                else:
+                    pass_num += 1
                     continue
 
-                x, y = self._grid_to_world(gx, gy)
+            logger.info(f"  Pass {pass_num + 1}: Found {len(free_rects)} free rectangles")
 
-                # Try to place smallest cassettes in gaps
-                for width, height, size_name in reversed(self.cassette_sizes):
-                    for w, h, name in [(width, height, size_name),
-                                      (height, width, f"{height}x{width}")]:
-                        cassette = UltraSmartCassette(x, y, w, h, name)
-                        # Use edge-tolerant validation for gap filling
-                        if self._is_cassette_valid(cassette, allow_edge_touch=True):
-                            self.placed_cassettes.append(cassette)
-                            self._mark_occupied(cassette)
-                            break
+            # Try to fill each free rectangle
+            placements_made = 0
+            for free_rect in free_rects:
+                fx, fy, fw, fh = free_rect
+                area = fw * fh
+
+                # Skip very small rectangles (< 3 sq ft)
+                if area < 3.0:
+                    continue
+
+                logger.info(f"    Trying free rect at ({fx:.1f}, {fy:.1f}) size {fw:.1f}x{fh:.1f} = {area:.1f} sq ft")
+
+                if self._try_place_in_free_rect(free_rect):
+                    placements_made += 1
+
+            logger.info(f"  Pass {pass_num + 1}: Placed {placements_made} cassettes")
+
+            # If no placements made, stop
+            if placements_made == 0:
+                break
+
+            pass_num += 1
 
     def optimize(self) -> Dict:
         """
