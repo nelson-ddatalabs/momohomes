@@ -21,6 +21,8 @@ jinja2 = "^3.0.0"
 ezdxf = "^0.17.0"
 scikit-learn = "^1.0.0"
 networkx = "^2.6"
+svgwrite = "^1.4.0"
+shapely = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2.0"
