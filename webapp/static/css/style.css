@@ -1,0 +1,141 @@
+/* Custom styles for Cassette Floor Plan Optimizer */
+
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Header Styles */
+h1 {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.lead {
+    font-size: 1.1rem;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.card-title {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Form Styles */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Button Styles */
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+}
+
+/* Edge Image Container */
+#edge-image-container {
+    max-height: 600px;
+    overflow: auto;
+}
+
+#edge-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Measurement Inputs */
+#measurement-inputs .mb-3 {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+#measurement-inputs label {
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Loading Overlay */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+/* Stacking Blocks Spinner */
+#spinner-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+}
+
+.block {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    animation: stack 2s infinite ease-in-out;
+}
+
+.block:nth-child(1) {
+    left: 0;
+    animation-delay: 0s;
+}
+
+.block:nth-child(2) {
+    left: 40px;
+    animation-delay: 0.2s;
+}
+
+.block:nth-child(3) {
+    left: 80px;
+    animation-delay: 0.4s;
+}
+
+@keyframes stack {
+    0%, 100% {
+        bottom: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    50% {
+        bottom: 80px;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+}
+
+/* Error Alert */
+.alert {
+    border-radius: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 2rem !important;
+    }
+}

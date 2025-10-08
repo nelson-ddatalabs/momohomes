@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimization Results - Cassette Floor Plan Optimizer</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h1 class="display-5 mb-3">✅ Optimization Complete!</h1>
+                <p class="lead text-muted">Your optimized floor plan is ready</p>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="row">
+            <!-- Left Column: SVG Display -->
+            <div class="col-12 col-lg-8 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title mb-3">Optimized Layout</h4>
+                        <div class="border rounded p-2 bg-light">
+                            <object
+                                data="/results/{{ session_id }}/cassette_layout.svg"
+                                type="image/svg+xml"
+                                style="width: 100%; height: auto; min-height: 500px;">
+                                <img src="/results/{{ session_id }}/cassette_layout.png" alt="Floor plan layout" class="img-fluid">
+                            </object>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Statistics & Download -->
+            <div class="col-12 col-lg-4">
+                <!-- Statistics Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">📊 Statistics</h4>
+
+                        <div class="mb-3">
+                            <label class="text-muted small">Total Area</label>
+                            <h5>{{ "%.1f"|format(statistics.total_area) }} sq ft</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-muted small">Coverage</label>
+                            <h5 class="text-success">{{ "%.2f"|format(statistics.coverage_percent) }}%</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-muted small">Cassettes</label>
+                            <h5>{{ statistics.cassette_count }} units</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-muted small">Cassette Area</label>
+                            <h5>{{ "%.1f"|format(statistics.cassette_area) }} sq ft</h5>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-muted small">C-Channel Area</label>
+                            <h5>{{ "%.1f"|format(statistics.cchannel_area) }} sq ft</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Download Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">📥 Download</h5>
+                        <div class="d-grid">
+                            <a href="/download/{{ session_id }}/svg" class="btn btn-primary btn-lg mb-2">
+                                Download SVG
+                            </a>
+                            <a href="/results/{{ session_id }}/cassette_layout.png" class="btn btn-outline-primary btn-lg" download>
+                                Download PNG
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Start New Button -->
+                <div class="d-grid">
+                    <a href="/" class="btn btn-outline-secondary btn-lg">
+                        ← Start New Optimization
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
