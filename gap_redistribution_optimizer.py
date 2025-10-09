@@ -670,17 +670,37 @@ class GapRedistributionOptimizer:
 
         c_channels = []
 
+        # CRITICAL FIX: Handle MultiPolygon gaps (multiple disconnected gap regions)
+        # Check if gap is composed of multiple pieces
+        from shapely.geometry import MultiPolygon, GeometryCollection
+
+        gap_pieces = []
+        if isinstance(actual_gap_geom, (MultiPolygon, GeometryCollection)):
+            gap_pieces = list(actual_gap_geom.geoms)
+            logger.info(f"Gap is fragmented into {len(gap_pieces)} separate pieces")
+            for i, piece in enumerate(gap_pieces):
+                bounds = piece.bounds
+                logger.info(f"  Piece {i+1}: x=[{bounds[0]:.3f}, {bounds[2]:.3f}], "
+                          f"y=[{bounds[1]:.3f}, {bounds[3]:.3f}], area={piece.area:.4f} sq ft")
+        elif not actual_gap_geom.is_empty:
+            gap_pieces = [actual_gap_geom]
+            logger.info(f"Gap is a single contiguous region")
+        else:
+            logger.info("No gap found - cassettes fully cover the polygon")
+            return []
+
         if orientation == 'vertical':
             gap_width = gap_info['gap_width']
             gap_height = gap_info['gap_height']
             gap_width_inches = gap_info['gap_width_inches']
 
-            logger.info(f"Filling vertical gap: {gap_width:.3f}' × {gap_height:.1f}' = {gap_area:.2f} sq ft")
+            logger.info(f"Filling vertical gap(s): planned {gap_width:.3f}' × {gap_height:.1f}' = {gap_area:.2f} sq ft")
 
-            # Use the ACTUAL gap geometry to determine C-channel placement
-            # Get the gap bounds
-            if not actual_gap_geom.is_empty:
-                gap_bounds = actual_gap_geom.bounds
+            # Process EACH gap piece separately
+            for piece_idx, gap_piece in enumerate(gap_pieces):
+                logger.info(f"\nProcessing gap piece {piece_idx+1}/{len(gap_pieces)}:")
+
+                gap_bounds = gap_piece.bounds
                 gap_x = gap_bounds[0]
                 gap_y_start = gap_bounds[1]
                 gap_x_end = gap_bounds[2]
@@ -689,96 +709,171 @@ class GapRedistributionOptimizer:
                 actual_gap_height = gap_y_end - gap_y_start
                 actual_gap_width_inches = actual_gap_width * 12
 
-                logger.info(f"Actual gap bounds: x=[{gap_x:.1f}, {gap_x_end:.1f}], y=[{gap_y_start:.1f}, {gap_y_end:.1f}]")
-                logger.info(f"Actual gap dimensions: {actual_gap_width:.3f}' × {actual_gap_height:.1f}' = {actual_gap_area:.2f} sq ft")
-            else:
-                # No gap - use planned dimensions
-                gap_x = split_location
-                gap_y_start = 0
-                actual_gap_width = gap_width
-                actual_gap_height = gap_height
-                actual_gap_width_inches = gap_width_inches
+                logger.info(f"  Gap bounds: x=[{gap_x:.3f}, {gap_x_end:.3f}], y=[{gap_y_start:.1f}, {gap_y_end:.1f}]")
+                logger.info(f"  Gap dimensions: {actual_gap_width:.3f}' ({actual_gap_width_inches:.2f}\") × {actual_gap_height:.1f}' = {gap_piece.area:.4f} sq ft")
 
-            if actual_gap_width_inches <= 18:
-                # Single C-channel fills the gap
-                c_channel = {
-                    'x': gap_x,
-                    'y': gap_y_start,
-                    'width': actual_gap_width,
-                    'height': actual_gap_height,
-                    'width_inches': actual_gap_width_inches,
-                    'area': actual_gap_width * actual_gap_height,
-                    'orientation': 'vertical'
-                }
-                c_channels.append(c_channel)
-                logger.info(f"✓ Placed single C-channel: {actual_gap_width_inches:.1f}\" × {actual_gap_height:.1f}' at ({gap_x:.1f}, {gap_y_start:.1f})")
+                if actual_gap_width_inches <= 18:
+                    # Check if height exceeds 8 feet limit for special panels
+                    max_panel_height = 8.0  # feet
 
-            else:
-                # Multiple C-channels side-by-side
-                num_cchannels = math.ceil(gap_width_inches / 18)
-                cchannel_width_inches = gap_width_inches / num_cchannels
-                cchannel_width_feet = cchannel_width_inches / 12
+                    if actual_gap_height <= max_panel_height:
+                        # Single C-channel fills the gap
+                        # Use ACTUAL gap piece area, not bounding box area
+                        c_channel = {
+                            'x': gap_x,
+                            'y': gap_y_start,
+                            'width': actual_gap_width,
+                            'height': actual_gap_height,
+                            'width_inches': actual_gap_width_inches,
+                            'area': gap_piece.area,  # Use actual gap area, not width × height
+                            'orientation': 'vertical'
+                        }
+                        c_channels.append(c_channel)
+                        logger.info(f"  ✓ Placed single C-channel: {actual_gap_width_inches:.2f}\" × {actual_gap_height:.1f}' (area={gap_piece.area:.4f} sq ft) at ({gap_x:.3f}, {gap_y_start:.1f})")
+                    else:
+                        # Stack multiple C-channels vertically due to height limitation
+                        num_cchannels = math.ceil(actual_gap_height / max_panel_height)
+                        cchannel_height = actual_gap_height / num_cchannels
 
-                logger.info(f"Placing {num_cchannels} C-channels side-by-side")
-                logger.info(f"Each C-channel: {cchannel_width_inches:.1f}\" × {gap_height:.1f}'")
+                        logger.info(f"  Height {actual_gap_height:.1f}' exceeds {max_panel_height:.1f}' limit")
+                        logger.info(f"  Stacking {num_cchannels} C-channels vertically")
+                        logger.info(f"  Each C-channel: {actual_gap_width_inches:.2f}\" × {cchannel_height:.1f}'")
 
-                for i in range(num_cchannels):
-                    c_channel = {
-                        'x': split_location + (i * cchannel_width_feet),
-                        'y': 0,
-                        'width': cchannel_width_feet,
-                        'height': gap_height,
-                        'width_inches': cchannel_width_inches,
-                        'area': cchannel_width_feet * gap_height,
-                        'orientation': 'vertical'
-                    }
-                    c_channels.append(c_channel)
+                        # Distribute gap area evenly among stacked panels
+                        area_per_panel = gap_piece.area / num_cchannels
 
-                logger.info(f"✓ Placed {num_cchannels} C-channels")
+                        for i in range(num_cchannels):
+                            c_channel = {
+                                'x': gap_x,
+                                'y': gap_y_start + (i * cchannel_height),
+                                'width': actual_gap_width,
+                                'height': cchannel_height,
+                                'width_inches': actual_gap_width_inches,
+                                'area': area_per_panel,  # Use proportional gap area
+                                'orientation': 'vertical'
+                            }
+                            c_channels.append(c_channel)
+
+                        logger.info(f"  ✓ Placed {num_cchannels} stacked C-channels (total area={gap_piece.area:.4f} sq ft)")
+
+                else:
+                    # Multiple C-channels side-by-side
+                    num_cchannels_wide = math.ceil(actual_gap_width_inches / 18)
+                    cchannel_width_inches = actual_gap_width_inches / num_cchannels_wide
+                    cchannel_width_feet = cchannel_width_inches / 12
+
+                    # Check if height exceeds 8 feet limit
+                    max_panel_height = 8.0  # feet
+                    if actual_gap_height <= max_panel_height:
+                        # No height stacking needed
+                        logger.info(f"  Placing {num_cchannels_wide} C-channels side-by-side")
+                        logger.info(f"  Each C-channel: {cchannel_width_inches:.2f}\" × {actual_gap_height:.1f}'")
+
+                        # Distribute gap area evenly among wide panels
+                        area_per_panel = gap_piece.area / num_cchannels_wide
+
+                        for i in range(num_cchannels_wide):
+                            c_channel = {
+                                'x': gap_x + (i * cchannel_width_feet),
+                                'y': gap_y_start,
+                                'width': cchannel_width_feet,
+                                'height': actual_gap_height,
+                                'width_inches': cchannel_width_inches,
+                                'area': area_per_panel,  # Use proportional gap area
+                                'orientation': 'vertical'
+                            }
+                            c_channels.append(c_channel)
+
+                        logger.info(f"  ✓ Placed {num_cchannels_wide} C-channels (total area={gap_piece.area:.4f} sq ft)")
+                    else:
+                        # Need both side-by-side AND vertical stacking
+                        num_cchannels_tall = math.ceil(actual_gap_height / max_panel_height)
+                        cchannel_height = actual_gap_height / num_cchannels_tall
+
+                        logger.info(f"  Placing {num_cchannels_wide} × {num_cchannels_tall} C-channels (grid)")
+                        logger.info(f"  Each C-channel: {cchannel_width_inches:.2f}\" × {cchannel_height:.1f}'")
+
+                        # Distribute gap area evenly among grid panels
+                        total_panels = num_cchannels_wide * num_cchannels_tall
+                        area_per_panel = gap_piece.area / total_panels
+
+                        for i in range(num_cchannels_wide):
+                            for j in range(num_cchannels_tall):
+                                c_channel = {
+                                    'x': gap_x + (i * cchannel_width_feet),
+                                    'y': gap_y_start + (j * cchannel_height),
+                                    'width': cchannel_width_feet,
+                                    'height': cchannel_height,
+                                    'width_inches': cchannel_width_inches,
+                                    'area': area_per_panel,  # Use proportional gap area
+                                    'orientation': 'vertical'
+                                }
+                                c_channels.append(c_channel)
+
+                        logger.info(f"  ✓ Placed {total_panels} C-channels in grid (total area={gap_piece.area:.4f} sq ft)")
 
         else:  # horizontal
             gap_width = gap_info['gap_width']
             gap_height = gap_info['gap_height']
             gap_height_inches = gap_info['gap_height_inches']
 
-            logger.info(f"Filling horizontal gap: {gap_width:.1f}' × {gap_height:.3f}' = {gap_area:.2f} sq ft")
+            logger.info(f"Filling horizontal gap(s): planned {gap_width:.1f}' × {gap_height:.3f}' = {gap_area:.2f} sq ft")
 
-            if gap_height_inches <= 18:
-                # Single C-channel
-                c_channel = {
-                    'x': 0,
-                    'y': split_location,
-                    'width': gap_width,
-                    'height': gap_height,
-                    'height_inches': gap_height_inches,
-                    'area': gap_area,
-                    'orientation': 'horizontal'
-                }
-                c_channels.append(c_channel)
-                logger.info(f"✓ Placed single C-channel: {gap_width:.1f}' × {gap_height_inches:.1f}\"")
+            # Process EACH gap piece separately
+            for piece_idx, gap_piece in enumerate(gap_pieces):
+                logger.info(f"\nProcessing gap piece {piece_idx+1}/{len(gap_pieces)}:")
 
-            else:
-                # Multiple C-channels stacked
-                num_cchannels = math.ceil(gap_height_inches / 18)
-                cchannel_height_inches = gap_height_inches / num_cchannels
-                cchannel_height_feet = cchannel_height_inches / 12
+                gap_bounds = gap_piece.bounds
+                gap_x_start = gap_bounds[0]
+                gap_y = gap_bounds[1]
+                gap_x_end = gap_bounds[2]
+                gap_y_end = gap_bounds[3]
+                actual_gap_width = gap_x_end - gap_x_start
+                actual_gap_height = gap_y_end - gap_y
+                actual_gap_height_inches = actual_gap_height * 12
 
-                logger.info(f"Placing {num_cchannels} C-channels stacked")
-                logger.info(f"Each C-channel: {gap_width:.1f}' × {cchannel_height_inches:.1f}\"")
+                logger.info(f"  Gap bounds: x=[{gap_x_start:.1f}, {gap_x_end:.1f}], y=[{gap_y:.3f}, {gap_y_end:.3f}]")
+                logger.info(f"  Gap dimensions: {actual_gap_width:.1f}' × {actual_gap_height:.3f}' ({actual_gap_height_inches:.2f}\") = {gap_piece.area:.4f} sq ft")
 
-                for i in range(num_cchannels):
+                if actual_gap_height_inches <= 18:
+                    # Single C-channel
                     c_channel = {
-                        'x': 0,
-                        'y': split_location + (i * cchannel_height_feet),
-                        'width': gap_width,
-                        'height': cchannel_height_feet,
-                        'height_inches': cchannel_height_inches,
-                        'area': gap_width * cchannel_height_feet,
+                        'x': gap_x_start,
+                        'y': gap_y,
+                        'width': actual_gap_width,
+                        'height': actual_gap_height,
+                        'height_inches': actual_gap_height_inches,
+                        'area': gap_piece.area,  # Use actual gap area
                         'orientation': 'horizontal'
                     }
                     c_channels.append(c_channel)
+                    logger.info(f"  ✓ Placed single C-channel: {actual_gap_width:.1f}' × {actual_gap_height_inches:.2f}\" (area={gap_piece.area:.4f} sq ft) at ({gap_x_start:.1f}, {gap_y:.3f})")
 
-                logger.info(f"✓ Placed {num_cchannels} C-channels")
+                else:
+                    # Multiple C-channels stacked
+                    num_cchannels = math.ceil(actual_gap_height_inches / 18)
+                    cchannel_height_inches = actual_gap_height_inches / num_cchannels
+                    cchannel_height_feet = cchannel_height_inches / 12
+
+                    logger.info(f"  Placing {num_cchannels} C-channels stacked")
+                    logger.info(f"  Each C-channel: {actual_gap_width:.1f}' × {cchannel_height_inches:.2f}\"")
+
+                    # Distribute gap area evenly among stacked panels
+                    area_per_panel = gap_piece.area / num_cchannels
+
+                    for i in range(num_cchannels):
+                        c_channel = {
+                            'x': gap_x_start,
+                            'y': gap_y + (i * cchannel_height_feet),
+                            'width': actual_gap_width,
+                            'height': cchannel_height_feet,
+                            'height_inches': cchannel_height_inches,
+                            'area': area_per_panel,  # Use proportional gap area
+                            'orientation': 'horizontal'
+                        }
+                        c_channels.append(c_channel)
+
+                    logger.info(f"  ✓ Placed {num_cchannels} C-channels (total area={gap_piece.area:.4f} sq ft)")
 
         # Calculate total C-channel area
         total_cchannel_area = sum(c['area'] for c in c_channels)
@@ -814,20 +909,31 @@ class GapRedistributionOptimizer:
         ]
         cchannel_union = unary_union(cchannel_geoms) if cchannel_geoms else Polygon()
 
-        # Combined coverage
-        total_union = unary_union([cassette_union, cchannel_union])
-        covered_area = total_union.area
+        # IMPORTANT: Clip geometries to polygon bounds before calculating coverage
+        # This ensures we only count areas actually inside the polygon
+        cassette_inside = cassette_union.intersection(self.polygon_shapely)
+        cchannel_inside = cchannel_union.intersection(self.polygon_shapely)
+        total_inside = unary_union([cassette_inside, cchannel_inside])
+
+        covered_area = total_inside.area
         coverage_percent = (covered_area / self.polygon_area) * 100
 
-        cassette_area = cassette_union.area
-        cchannel_area = cchannel_union.area
+        cassette_area = cassette_inside.area
+        cchannel_area = cchannel_inside.area
+
+        # Check if anything extends outside
+        cassette_outside = cassette_union.difference(self.polygon_shapely)
+        cchannel_outside = cchannel_union.difference(self.polygon_shapely)
+        outside_area = cassette_outside.area + cchannel_outside.area
 
         logger.info(f"Coverage validation:")
         logger.info(f"  Polygon area: {self.polygon_area:.2f} sq ft")
-        logger.info(f"  Cassette area: {cassette_area:.2f} sq ft")
-        logger.info(f"  C-channel area: {cchannel_area:.2f} sq ft")
+        logger.info(f"  Cassette area (inside polygon): {cassette_area:.2f} sq ft")
+        logger.info(f"  C-channel area (inside polygon): {cchannel_area:.2f} sq ft")
         logger.info(f"  Total covered: {covered_area:.2f} sq ft")
         logger.info(f"  Coverage: {coverage_percent:.4f}%")
+        if outside_area > self.GEOMETRIC_TOLERANCE:
+            logger.warning(f"  ⚠️  Placement extends {outside_area:.4f} sq ft outside polygon")
 
         # Check if coverage is exactly 100%
         coverage_diff = abs(100.0 - coverage_percent)
@@ -836,14 +942,14 @@ class GapRedistributionOptimizer:
         else:
             logger.warning(f"  ⚠️  Coverage deviation: {coverage_diff:.4f}%")
 
-        # Check for overlaps
-        overlap = cassette_union.intersection(cchannel_union)
+        # Check for overlaps (use clipped geometries)
+        overlap = cassette_inside.intersection(cchannel_inside)
         overlap_area = overlap.area if not overlap.is_empty else 0
 
         if overlap_area > self.GEOMETRIC_TOLERANCE:
             logger.warning(f"  ⚠️  Overlap detected: {overlap_area:.4f} sq ft")
         else:
-            logger.info(f"  ✓ No overlaps between cassettes and C-channels")
+            logger.info(f"  ✓ No overlaps between cassettes and special panels")
 
         # Check cassette constraints
         invalid_cassettes = []
@@ -873,14 +979,14 @@ class GapRedistributionOptimizer:
         else:
             logger.info(f"  ✓ All {len(c_channels)} C-channels within 1.5\"-18\" range")
 
-        # Check boundary gaps
-        gap_geom = self.polygon_shapely.difference(total_union)
+        # Check boundary gaps (use clipped geometries)
+        gap_geom = self.polygon_shapely.difference(total_inside)
         remaining_gap = gap_geom.area
 
         if remaining_gap > self.GEOMETRIC_TOLERANCE:
             logger.warning(f"  ⚠️  Remaining gap: {remaining_gap:.4f} sq ft")
         else:
-            logger.info(f"  ✓ No boundary gaps remaining")
+            logger.info(f"  ✓ No gaps remaining - polygon fully covered")
 
         return {
             'valid': (coverage_diff <= self.COVERAGE_TOLERANCE and

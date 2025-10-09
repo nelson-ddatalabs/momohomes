@@ -26,7 +26,7 @@ def create_simple_visualization(cassettes: List[Dict], polygon: List[Tuple[float
         statistics: Statistics dictionary
         output_path: Path to save visualization (with or without extension)
         floor_plan_name: Name of floor plan
-        inset_polygon: Optional inset polygon for C-channel visualization
+        inset_polygon: Optional inset polygon for special panel visualization
     """
 
     # Determine output paths
@@ -105,25 +105,25 @@ def _prepare_shared_data(cassettes, polygon, statistics, floor_plan_name, inset_
     for i, size in enumerate(sorted_sizes):
         size_colors[size] = color_palette[i % len(color_palette)]
 
-    # Process C-channels
-    has_cchannel = 'cchannel_area' in statistics
+    # Process special panels
+    has_special_panel = 'cchannel_area' in statistics
     per_cassette_mode = statistics.get('per_cassette_cchannel', False)
-    cchannel_widths_per_cassette = statistics.get('cchannel_widths_per_cassette', [])
-    cchannel_geometries = statistics.get('cchannel_geometries', [])
+    special_panel_widths_per_cassette = statistics.get('cchannel_widths_per_cassette', [])
+    special_panel_geometries = statistics.get('cchannel_geometries', [])
 
-    # Calculate C-channel labels and identify small ones
-    cchannel_labels = []
-    small_cchannels = []
+    # Calculate special panel labels and identify small ones
+    special_panel_labels = []
+    small_special_panels = []
 
-    for geom in cchannel_geometries:
+    for geom in special_panel_geometries:
         minx, miny = geom['minx'], geom['miny']
         maxx, maxy = geom['maxx'], geom['maxy']
 
         # Calculate dimensions in feet
         width_dim = maxx - minx
         height_dim = maxy - miny
-        cchannel_width = min(width_dim, height_dim)  # Gap-filling dimension (1.5"-18")
-        cchannel_length = max(width_dim, height_dim)  # Length dimension (up to 8')
+        special_panel_width = min(width_dim, height_dim)  # Gap-filling dimension (1.5"-18")
+        special_panel_length = max(width_dim, height_dim)  # Length dimension (up to 8')
 
         # Determine orientation
         is_horizontal = width_dim > height_dim
@@ -137,12 +137,12 @@ def _prepare_shared_data(cassettes, polygon, statistics, floor_plan_name, inset_
         min_pixel_dim = min(pixel_width, pixel_height)
 
         # Create label
-        label = f"{cchannel_width:.1f}' x {cchannel_length:.1f}'"
+        label = f"{special_panel_width:.1f}' x {special_panel_length:.1f}'"
 
         # Check if label fits
         can_show_label = min_pixel_dim >= 50
 
-        cchannel_data = {
+        special_panel_data = {
             'bounds': (minx, miny, maxx, maxy),
             'pixel_bounds': (px1, py1, px2, py2),
             'label': label,
@@ -152,9 +152,19 @@ def _prepare_shared_data(cassettes, polygon, statistics, floor_plan_name, inset_
         }
 
         if can_show_label:
-            cchannel_labels.append(cchannel_data)
+            special_panel_labels.append(special_panel_data)
         else:
-            small_cchannels.append(label)
+            small_special_panels.append(label)
+
+    # Count special panels by size (for legend)
+    special_panel_size_counts = {}
+    for geom in special_panel_geometries:
+        width_dim = geom['maxx'] - geom['minx']
+        height_dim = geom['maxy'] - geom['miny']
+        special_panel_width = min(width_dim, height_dim)
+        special_panel_length = max(width_dim, height_dim)
+        size_label = f"{special_panel_width:.1f}' × {special_panel_length:.1f}'"
+        special_panel_size_counts[size_label] = special_panel_size_counts.get(size_label, 0) + 1
 
     # Prepare cassette data
     cassette_data = []
@@ -187,17 +197,19 @@ def _prepare_shared_data(cassettes, polygon, statistics, floor_plan_name, inset_
             'center': ((px1 + px2) // 2, (py1 + py2) // 2)
         })
 
-    # Calculate vertical stacking layout
-    layout = _calculate_vertical_layout(
+    # Calculate horizontal three-column layout
+    layout = _calculate_horizontal_layout(
         floor_plan_width,
         floor_plan_height,
-        has_cchannel,
+        has_special_panel,
         len(sorted_sizes),
-        small_cchannels
+        small_special_panels,
+        len(special_panel_size_counts),
+        inset_polygon is not None
     )
 
     # Prepare title
-    title = f"{floor_plan_name.upper()} CASSETTE PLAN" if floor_plan_name else "CASSETTE FLOOR PLAN"
+    title = f"{floor_plan_name.upper()} FLOOR JOIST CASSETTE PLAN" if floor_plan_name else "FLOOR JOIST CASSETTE PLAN"
 
     return {
         'min_x': min_x,
@@ -214,82 +226,105 @@ def _prepare_shared_data(cassettes, polygon, statistics, floor_plan_name, inset_
         'polygon_points': polygon_points,
         'inset_points': inset_points,
         'cassette_data': cassette_data,
-        'cchannel_labels': cchannel_labels,
-        'small_cchannels': small_cchannels,
-        'cchannel_geometries': cchannel_geometries,
+        'special_panel_labels': special_panel_labels,
+        'small_special_panels': small_special_panels,
+        'special_panel_geometries': special_panel_geometries,
+        'special_panel_size_counts': special_panel_size_counts,
         'size_counts': size_counts,
         'size_colors': size_colors,
         'sorted_sizes': sorted_sizes,
         'statistics': statistics,
-        'has_cchannel': has_cchannel,
+        'has_special_panel': has_special_panel,
         'per_cassette_mode': per_cassette_mode,
-        'cchannel_widths_per_cassette': cchannel_widths_per_cassette,
+        'special_panel_widths_per_cassette': special_panel_widths_per_cassette,
         'title': title,
         'layout': layout
     }
 
 
-def _calculate_vertical_layout(floor_plan_width, floor_plan_height, has_cchannel, num_cassette_sizes, small_cchannels):
-    """Calculate positions for vertical stacking layout"""
+def _calculate_horizontal_layout(floor_plan_width, floor_plan_height, has_special_panel, num_cassette_sizes, small_special_panels, num_special_panel_sizes, has_inset_polygon):
+    """Calculate positions for horizontal three-column layout"""
 
-    # Start position for legend area
-    legend_start_y = floor_plan_height + 20
+    # Start position for bottom section (below floor plan)
+    bottom_start_y = floor_plan_height + 20
 
-    # Calculate box dimensions
-    box_spacing = 30
-    current_y = legend_start_y
+    # Gap between columns
+    column_gap = 20
 
-    # Statistics box
-    stats_lines = 5 if has_cchannel else 3
-    stats_height = stats_lines * 25 + 40
-    stats_box = {
-        'x': 20,
-        'y': current_y,
-        'width': 300,
-        'height': stats_height
-    }
-    current_y += stats_height + box_spacing
+    # Calculate total width (ensure minimum for three columns)
+    total_content_width = floor_plan_width
+    min_column_width = 250
+    min_total_width = min_column_width * 3 + column_gap * 2 + 40  # 3 columns + 2 gaps + margins
 
-    # C-channel info box (if applicable)
-    cchannel_box = None
-    if has_cchannel:
-        # Base lines: min/max/avg = 3 lines
-        cchannel_lines = 3
-        # Add lines for small C-channels
-        if small_cchannels:
-            cchannel_lines += 1 + math.ceil(len(small_cchannels) / 2)  # Title + wrapped labels
+    if total_content_width < min_total_width:
+        total_content_width = min_total_width
 
-        cchannel_height = cchannel_lines * 25 + 40
-        cchannel_box = {
-            'x': 20,
-            'y': current_y,
-            'width': 400,
-            'height': cchannel_height
-        }
-        current_y += cchannel_height + box_spacing
+    # Calculate column width (equal thirds with gaps)
+    available_width = total_content_width - column_gap * 2 - 40  # Subtract gaps and margins
+    column_width = available_width // 3
 
-    # Legend box
-    legend_entries = num_cassette_sizes + (2 if has_cchannel else 0)
-    legend_height = legend_entries * 30 + 40
+    # Calculate box heights based on content
+    # Legend box height
+    legend_entries = num_cassette_sizes + num_special_panel_sizes + (1 if has_inset_polygon else 0)
+    legend_height = max(legend_entries * 30 + 40, 150)  # Minimum 150px
+
+    # Special panel box height
+    if has_special_panel:
+        special_panel_lines = 3  # Base lines
+        if small_special_panels:
+            special_panel_lines += 1 + math.ceil(len(small_special_panels) / 2)
+        special_panel_height = max(special_panel_lines * 25 + 40, 150)
+    else:
+        special_panel_height = 150
+
+    # Statistics box height
+    stats_lines = 5 if has_special_panel else 3
+    stats_height = max(stats_lines * 25 + 40, 150)
+
+    # Use maximum height for all boxes to make them equal
+    box_height = max(legend_height, special_panel_height, stats_height, 180)
+
+    # Calculate positions for three columns
+    margin_x = 20
+
+    # Column 1: Legend
     legend_box = {
-        'x': 20,
-        'y': current_y,
-        'width': 250,
-        'height': legend_height
+        'x': margin_x,
+        'y': bottom_start_y,
+        'width': column_width,
+        'height': box_height
     }
-    current_y += legend_height
+
+    # Column 2: Special Panel
+    special_panel_box = {
+        'x': margin_x + column_width + column_gap,
+        'y': bottom_start_y,
+        'width': column_width,
+        'height': box_height
+    } if has_special_panel else None
+
+    # Column 3: Statistics
+    stats_box = {
+        'x': margin_x + (column_width + column_gap) * 2,
+        'y': bottom_start_y,
+        'width': column_width,
+        'height': box_height
+    }
 
     # Calculate total dimensions
-    total_height = current_y + 20  # Add bottom margin
-    total_width = max(floor_plan_width, 450)  # Ensure minimum width
+    total_height = bottom_start_y + box_height + 20  # Add bottom margin
+    total_width = total_content_width
 
     return {
-        'legend_start_y': legend_start_y,
+        'legend_start_y': bottom_start_y,
         'stats_box': stats_box,
-        'cchannel_box': cchannel_box,
+        'special_panel_box': special_panel_box,
         'legend_box': legend_box,
         'total_width': total_width,
-        'total_height': total_height
+        'total_height': total_height,
+        'column_width': column_width,
+        'column_gap': column_gap,
+        'box_height': box_height
     }
 
 
@@ -322,20 +357,20 @@ def _render_png(data, output_path):
     if data['inset_points']:
         draw.polygon(data['inset_points'], fill=(230, 230, 230), outline=(150, 150, 150))
 
-    # Draw C-channel geometries
-    cchannel_color = (240, 200, 180)  # Tan/beige (RGB format for PIL)
-    for geom in data['cchannel_geometries']:
+    # Draw special panel geometries
+    special_panel_color = (240, 200, 180)  # Tan/beige (RGB format for PIL)
+    for geom in data['special_panel_geometries']:
         minx, miny, maxx, maxy = geom['minx'], geom['miny'], geom['maxx'], geom['maxy']
         px1, py1 = data['to_pixel_coords'](minx, maxy)
         px2, py2 = data['to_pixel_coords'](maxx, miny)
 
-        draw.rectangle([px1, py1, px2, py2], fill=cchannel_color, outline=(100, 100, 100))
+        draw.rectangle([px1, py1, px2, py2], fill=special_panel_color, outline=(100, 100, 100))
 
-    # Draw C-channel labels (with rotation)
-    for cc_data in data['cchannel_labels']:
-        label = cc_data['label']
-        cx, cy = cc_data['center']
-        is_horizontal = cc_data['is_horizontal']
+    # Draw special panel labels (with rotation)
+    for sp_data in data['special_panel_labels']:
+        label = sp_data['label']
+        cx, cy = sp_data['center']
+        is_horizontal = sp_data['is_horizontal']
 
         # Create text image
         if is_horizontal:
@@ -400,7 +435,7 @@ def _render_png(data, output_path):
 
 
 def _draw_legend_boxes_pil(draw, data, font_small, font_medium, font_large):
-    """Draw statistics, C-channel info, and legend boxes on PIL image"""
+    """Draw statistics, special panel info, and legend boxes on PIL image"""
 
     layout = data['layout']
 
@@ -427,47 +462,47 @@ def _draw_legend_boxes_pil(draw, data, font_small, font_medium, font_large):
     y_offset += 25
     draw.text((stats_box['x'] + 10, y_offset), f"Cassettes: {cassette_count} units", fill=(0, 0, 0), font=font_medium)
 
-    if data['has_cchannel']:
+    if data['has_special_panel']:
         y_offset += 25
         cassette_area = stats.get('covered', 0) - stats['cchannel_area']
         draw.text((stats_box['x'] + 10, y_offset), f"Cassette Area: {cassette_area:.0f} sq ft", fill=(0, 0, 0), font=font_medium)
         y_offset += 25
-        draw.text((stats_box['x'] + 10, y_offset), f"C-Channel Area: {stats['cchannel_area']:.1f} sq ft", fill=(0, 0, 0), font=font_medium)
+        draw.text((stats_box['x'] + 10, y_offset), f"Special Panel Area: {stats['cchannel_area']:.1f} sq ft", fill=(0, 0, 0), font=font_medium)
 
-    # C-channel info box
-    if data['has_cchannel'] and layout['cchannel_box']:
-        cc_box = layout['cchannel_box']
+    # Special panel info box
+    if data['has_special_panel'] and layout['special_panel_box']:
+        sp_box = layout['special_panel_box']
         draw.rectangle(
-            [cc_box['x'] - 5, cc_box['y'] - 5,
-             cc_box['x'] + cc_box['width'], cc_box['y'] + cc_box['height']],
+            [sp_box['x'] - 5, sp_box['y'] - 5,
+             sp_box['x'] + sp_box['width'], sp_box['y'] + sp_box['height']],
             fill=(250, 250, 250), outline=(100, 100, 100)
         )
 
-        draw.text((cc_box['x'] + 10, cc_box['y'] + 10), "C-CHANNEL INFO", fill=(0, 0, 0), font=font_large)
+        draw.text((sp_box['x'] + 10, sp_box['y'] + 10), "SPECIAL PANEL INFO", fill=(0, 0, 0), font=font_large)
 
-        y_offset = cc_box['y'] + 40
+        y_offset = sp_box['y'] + 40
 
-        if data['per_cassette_mode'] and data['cchannel_widths_per_cassette']:
-            widths = data['cchannel_widths_per_cassette']
-            min_c = min(widths)
-            max_c = max(widths)
-            avg_c = sum(widths) / len(widths)
+        if data['per_cassette_mode'] and data['special_panel_widths_per_cassette']:
+            widths = data['special_panel_widths_per_cassette']
+            min_sp = min(widths)
+            max_sp = max(widths)
+            avg_sp = sum(widths) / len(widths)
 
-            draw.text((cc_box['x'] + 10, y_offset), f"Min: {min_c:.2f}\"", fill=(0, 0, 0), font=font_medium)
+            draw.text((sp_box['x'] + 10, y_offset), f"Min: {min_sp:.2f}\"", fill=(0, 0, 0), font=font_medium)
             y_offset += 25
-            draw.text((cc_box['x'] + 10, y_offset), f"Max: {max_c:.2f}\"", fill=(0, 0, 0), font=font_medium)
+            draw.text((sp_box['x'] + 10, y_offset), f"Max: {max_sp:.2f}\"", fill=(0, 0, 0), font=font_medium)
             y_offset += 25
-            draw.text((cc_box['x'] + 10, y_offset), f"Avg: {avg_c:.2f}\"", fill=(0, 0, 0), font=font_medium)
+            draw.text((sp_box['x'] + 10, y_offset), f"Avg: {avg_sp:.2f}\"", fill=(0, 0, 0), font=font_medium)
 
-        # Add small C-channels if any
-        if data['small_cchannels']:
+        # Add small special panels if any
+        if data['small_special_panels']:
             y_offset += 25
-            draw.text((cc_box['x'] + 10, y_offset), "Small C-Channels:", fill=(0, 0, 0), font=font_medium)
+            draw.text((sp_box['x'] + 10, y_offset), "Small Special Panels:", fill=(0, 0, 0), font=font_medium)
             y_offset += 20
 
             # Wrap labels
-            labels_text = ", ".join(data['small_cchannels'])
-            draw.text((cc_box['x'] + 10, y_offset), labels_text, fill=(0, 0, 0), font=font_small)
+            labels_text = ", ".join(data['small_special_panels'])
+            draw.text((sp_box['x'] + 10, y_offset), labels_text, fill=(0, 0, 0), font=font_small)
 
     # Legend box
     legend_box = layout['legend_box']
@@ -482,15 +517,17 @@ def _draw_legend_boxes_pil(draw, data, font_small, font_medium, font_large):
     y_offset = legend_box['y'] + 40
     entry_idx = 0
 
-    # C-channel entries
-    if data['has_cchannel']:
-        # C-Channel color box
+    # Special panel entries (treated like cassettes with size and count)
+    special_panel_color = (240, 200, 180)  # Tan/beige
+    for size, count in sorted(data['special_panel_size_counts'].items()):
         draw.rectangle([legend_box['x'] + 10, y_offset - 12, legend_box['x'] + 30, y_offset + 8],
-                      fill=(240, 200, 180), outline=(50, 50, 50))
-        draw.text((legend_box['x'] + 40, y_offset - 5), "C-Channel", fill=(0, 0, 0), font=font_medium)
+                      fill=special_panel_color, outline=(50, 50, 50))
+        unit_text = "unit" if count == 1 else "units"
+        draw.text((legend_box['x'] + 40, y_offset - 5), f"{size}: {count} {unit_text}", fill=(0, 0, 0), font=font_medium)
         y_offset += 30
 
-        # Empty space color box
+    # Empty space entry (only if inset polygon exists)
+    if data['inset_points']:
         draw.rectangle([legend_box['x'] + 10, y_offset - 12, legend_box['x'] + 30, y_offset + 8],
                       fill=(230, 230, 230), outline=(50, 50, 50))
         draw.text((legend_box['x'] + 40, y_offset - 5), "Empty Space", fill=(0, 0, 0), font=font_medium)
@@ -528,8 +565,8 @@ def _render_svg(data, output_path):
                            stroke='rgb(150,150,150)',
                            stroke_width=1))
 
-    # Draw C-channel geometries
-    for geom in data['cchannel_geometries']:
+    # Draw special panel geometries
+    for geom in data['special_panel_geometries']:
         minx, miny, maxx, maxy = geom['minx'], geom['miny'], geom['maxx'], geom['maxy']
         px1, py1 = data['to_pixel_coords'](minx, maxy)
         px2, py2 = data['to_pixel_coords'](maxx, miny)
@@ -543,11 +580,11 @@ def _render_svg(data, output_path):
                         stroke='rgb(100,100,100)',
                         stroke_width=1))
 
-    # Draw C-channel labels
-    for cc_data in data['cchannel_labels']:
-        label = cc_data['label']
-        cx, cy = cc_data['center']
-        is_horizontal = cc_data['is_horizontal']
+    # Draw special panel labels
+    for sp_data in data['special_panel_labels']:
+        label = sp_data['label']
+        cx, cy = sp_data['center']
+        is_horizontal = sp_data['is_horizontal']
 
         if is_horizontal:
             dwg.add(dwg.text(label, insert=(cx, cy),
@@ -609,7 +646,7 @@ def _render_svg(data, output_path):
 
 
 def _draw_legend_boxes_svg(dwg, data):
-    """Draw statistics, C-channel info, and legend boxes on SVG"""
+    """Draw statistics, special panel info, and legend boxes on SVG"""
 
     layout = data['layout']
 
@@ -643,55 +680,55 @@ def _draw_legend_boxes_svg(dwg, data):
                     insert=(stats_box['x'] + 10, y_offset),
                     font_size=16, font_family='Arial', fill='black'))
 
-    if data['has_cchannel']:
+    if data['has_special_panel']:
         y_offset += 25
         cassette_area = stats.get('covered', 0) - stats['cchannel_area']
         dwg.add(dwg.text(f"Cassette Area: {cassette_area:.0f} sq ft",
                         insert=(stats_box['x'] + 10, y_offset),
                         font_size=16, font_family='Arial', fill='black'))
         y_offset += 25
-        dwg.add(dwg.text(f"C-Channel Area: {stats['cchannel_area']:.1f} sq ft",
+        dwg.add(dwg.text(f"Special Panel Area: {stats['cchannel_area']:.1f} sq ft",
                         insert=(stats_box['x'] + 10, y_offset),
                         font_size=16, font_family='Arial', fill='black'))
 
-    # C-channel info box
-    if data['has_cchannel'] and layout['cchannel_box']:
-        cc_box = layout['cchannel_box']
-        dwg.add(dwg.rect(insert=(cc_box['x'] - 5, cc_box['y'] - 5),
-                        size=(cc_box['width'], cc_box['height']),
+    # Special panel info box
+    if data['has_special_panel'] and layout['special_panel_box']:
+        sp_box = layout['special_panel_box']
+        dwg.add(dwg.rect(insert=(sp_box['x'] - 5, sp_box['y'] - 5),
+                        size=(sp_box['width'], sp_box['height']),
                         fill='rgb(250,250,250)',
                         stroke='rgb(100,100,100)',
                         stroke_width=1))
 
-        dwg.add(dwg.text("C-CHANNEL INFO", insert=(cc_box['x'] + 10, cc_box['y'] + 25),
+        dwg.add(dwg.text("SPECIAL PANEL INFO", insert=(sp_box['x'] + 10, sp_box['y'] + 25),
                         font_size=20, font_family='Arial', font_weight='bold', fill='black'))
 
-        y_offset = cc_box['y'] + 55
+        y_offset = sp_box['y'] + 55
 
-        if data['per_cassette_mode'] and data['cchannel_widths_per_cassette']:
-            widths = data['cchannel_widths_per_cassette']
-            min_c = min(widths)
-            max_c = max(widths)
-            avg_c = sum(widths) / len(widths)
+        if data['per_cassette_mode'] and data['special_panel_widths_per_cassette']:
+            widths = data['special_panel_widths_per_cassette']
+            min_sp = min(widths)
+            max_sp = max(widths)
+            avg_sp = sum(widths) / len(widths)
 
-            dwg.add(dwg.text(f"Min: {min_c:.2f}\"", insert=(cc_box['x'] + 10, y_offset),
+            dwg.add(dwg.text(f"Min: {min_sp:.2f}\"", insert=(sp_box['x'] + 10, y_offset),
                            font_size=16, font_family='Arial', fill='black'))
             y_offset += 25
-            dwg.add(dwg.text(f"Max: {max_c:.2f}\"", insert=(cc_box['x'] + 10, y_offset),
+            dwg.add(dwg.text(f"Max: {max_sp:.2f}\"", insert=(sp_box['x'] + 10, y_offset),
                            font_size=16, font_family='Arial', fill='black'))
             y_offset += 25
-            dwg.add(dwg.text(f"Avg: {avg_c:.2f}\"", insert=(cc_box['x'] + 10, y_offset),
+            dwg.add(dwg.text(f"Avg: {avg_sp:.2f}\"", insert=(sp_box['x'] + 10, y_offset),
                            font_size=16, font_family='Arial', fill='black'))
 
-        # Add small C-channels
-        if data['small_cchannels']:
+        # Add small special panels
+        if data['small_special_panels']:
             y_offset += 25
-            dwg.add(dwg.text("Small C-Channels:", insert=(cc_box['x'] + 10, y_offset),
+            dwg.add(dwg.text("Small Special Panels:", insert=(sp_box['x'] + 10, y_offset),
                            font_size=16, font_family='Arial', fill='black'))
             y_offset += 20
 
-            labels_text = ", ".join(data['small_cchannels'])
-            dwg.add(dwg.text(labels_text, insert=(cc_box['x'] + 10, y_offset),
+            labels_text = ", ".join(data['small_special_panels'])
+            dwg.add(dwg.text(labels_text, insert=(sp_box['x'] + 10, y_offset),
                            font_size=12, font_family='Arial', fill='black'))
 
     # Legend box
@@ -707,17 +744,20 @@ def _draw_legend_boxes_svg(dwg, data):
 
     y_offset = legend_box['y'] + 50
 
-    # C-channel entries
-    if data['has_cchannel']:
+    # Special panel entries (treated like cassettes with size and count)
+    for size, count in sorted(data['special_panel_size_counts'].items()):
         dwg.add(dwg.rect(insert=(legend_box['x'] + 10, y_offset - 12),
                         size=(20, 20),
                         fill='rgb(240,200,180)',
                         stroke='rgb(50,50,50)',
                         stroke_width=1))
-        dwg.add(dwg.text("C-Channel", insert=(legend_box['x'] + 40, y_offset + 3),
+        unit_text = "unit" if count == 1 else "units"
+        dwg.add(dwg.text(f"{size}: {count} {unit_text}", insert=(legend_box['x'] + 40, y_offset + 3),
                         font_size=16, font_family='Arial', fill='black'))
         y_offset += 30
 
+    # Empty space entry (only if inset polygon exists)
+    if data['inset_points']:
         dwg.add(dwg.rect(insert=(legend_box['x'] + 10, y_offset - 12),
                         size=(20, 20),
                         fill='rgb(230,230,230)',

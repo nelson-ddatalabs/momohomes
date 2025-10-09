@@ -1,54 +1,87 @@
 """
-Simplified edge detection processor for web application
-Extracts floor plan edges and generates labeled visualization
+Cardinal Edge Detection Processor for Web Application
+======================================================
+Uses the same robust cardinal system as run_cassette_system.py
+Extracts floor plan edges using green color detection and cardinal directions
 """
 
 import cv2
 import numpy as np
-from typing import List, Tuple, Dict
+from typing import List, Dict
 import sys
-import os
 from pathlib import Path
 
 # Add parent directory to access main modules
-sys.path.insert(0, str(Path(__file__).parent.parent))
+parent_dir = str(Path(__file__).parent.parent)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
-from cardinal_edge_detector import CardinalEdge
+# Add alternate parent directory
+alt_parent = "/Users/nelsondsouza/Documents/products/momohomes"
+if alt_parent not in sys.path:
+    sys.path.insert(0, alt_parent)
+
+from enhanced_binary_converter import EnhancedBinaryConverter
+from cardinal_edge_detector import CardinalEdgeDetector, CardinalEdge
 
 
 class EdgeProcessor:
-    """Process floor plan images to detect and label edges"""
+    """Process floor plan images using cardinal edge detection system"""
 
     def __init__(self):
-        pass
+        """Initialize with cardinal system components"""
+        self.binary_converter = EnhancedBinaryConverter()
+        self.edge_detector = CardinalEdgeDetector(simplification_epsilon=5.0)
 
-    def process_image(self, image_path: str, output_path: str) -> Dict:
+    def process_image(self, image_path: str, output_path: str, binary_output_path: str = None) -> Dict:
         """
-        Process image to detect edges and generate labeled visualization
+        Process image using cardinal edge detection system
 
         Args:
             image_path: Path to input floor plan image
             output_path: Path to save labeled output image
+            binary_output_path: Optional path to save binary image
 
         Returns:
-            Dict with edge_count and edge_data
+            Dict with edge_count, edges list, and binary_path
         """
         try:
-            # Read image
-            image = cv2.imread(image_path)
-            if image is None:
-                raise ValueError("Failed to read image")
+            # Step 1: Convert to binary using green extraction
+            binary_image = self.binary_converter.convert_to_binary(image_path)
+            if binary_image is None:
+                raise ValueError("Failed to convert image to binary")
 
-            # Detect edges using simple contour detection
-            edges = self._detect_edges(image)
+            # Save binary image if path provided
+            if binary_output_path:
+                self.binary_converter.save_binary(binary_image, binary_output_path)
 
-            # Generate labeled visualization
-            self._generate_labeled_image(image, edges, output_path)
+            # Step 2: Detect cardinal edges
+            cardinal_edges = self.edge_detector.detect_cardinal_edges(binary_image)
+
+            if not cardinal_edges:
+                raise ValueError("No cardinal edges detected")
+
+            # Step 3: Generate labeled visualization
+            self._generate_labeled_image(image_path, binary_image, cardinal_edges, output_path)
+
+            # Step 4: Convert to dictionary format for webapp
+            # Convert numpy int32 to Python int for JSON serialization
+            edges_data = []
+            for i, edge in enumerate(cardinal_edges):
+                edges_data.append({
+                    'id': i + 1,
+                    'pixel_length': float(edge.pixel_length),
+                    'cardinal_direction': edge.cardinal_direction,
+                    'start': (int(edge.start[0]), int(edge.start[1])),
+                    'end': (int(edge.end[0]), int(edge.end[1]))
+                })
 
             return {
                 'success': True,
-                'edge_count': len(edges),
-                'edges': [{'id': i+1, 'length': e['pixel_length']} for i, e in enumerate(edges)]
+                'edge_count': len(cardinal_edges),
+                'edges': edges_data,
+                'cardinal_edges': cardinal_edges,  # Keep original objects for optimization
+                'binary_path': binary_output_path
             }
 
         except Exception as e:
@@ -57,104 +90,56 @@ class EdgeProcessor:
                 'error': str(e)
             }
 
-    def _detect_edges(self, image: np.ndarray) -> List[Dict]:
+    def _generate_labeled_image(self, original_image_path: str, binary_image: np.ndarray,
+                                edges: List[CardinalEdge], output_path: str):
         """
-        Detect edges in floor plan using contour detection
+        Generate visualization with numbered edges and cardinal directions
 
         Args:
-            image: Input image as numpy array
-
-        Returns:
-            List of edge dictionaries
-        """
-        # Convert to grayscale
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        # Apply Gaussian blur
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
-
-        # Detect edges using Canny
-        edges_img = cv2.Canny(blurred, 50, 150)
-
-        # Find contours
-        contours, _ = cv2.findContours(edges_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        if not contours:
-            # Fallback: create simple rectangular boundary
-            h, w = image.shape[:2]
-            return [
-                {'pixel_length': w, 'start': (0, 0), 'end': (w, 0)},      # Top
-                {'pixel_length': h, 'start': (w, 0), 'end': (w, h)},      # Right
-                {'pixel_length': w, 'start': (w, h), 'end': (0, h)},      # Bottom
-                {'pixel_length': h, 'start': (0, h), 'end': (0, 0)}       # Left
-            ]
-
-        # Get largest contour (main floor plan boundary)
-        largest_contour = max(contours, key=cv2.contourArea)
-
-        # Approximate contour to polygon
-        epsilon = 0.02 * cv2.arcLength(largest_contour, True)
-        approx = cv2.approxPolyDP(largest_contour, epsilon, True)
-
-        # Convert polygon to edges
-        edges = []
-        points = approx.reshape(-1, 2)
-
-        for i in range(len(points)):
-            start = tuple(points[i])
-            end = tuple(points[(i + 1) % len(points)])
-
-            # Calculate edge length
-            dx = end[0] - start[0]
-            dy = end[1] - start[1]
-            length = np.sqrt(dx*dx + dy*dy)
-
-            edges.append({
-                'pixel_length': length,
-                'start': start,
-                'end': end
-            })
-
-        return edges
-
-    def _generate_labeled_image(self, image: np.ndarray, edges: List[Dict], output_path: str):
-        """
-        Generate visualization with numbered edges
-
-        Args:
-            image: Input image
-            edges: List of detected edges
+            original_image_path: Path to original image
+            binary_image: Binary image from conversion
+            edges: List of CardinalEdge objects
             output_path: Path to save output
         """
-        # Create copy of image
-        labeled = image.copy()
+        # Load original image for better visualization
+        original = cv2.imread(original_image_path)
+        if original is None:
+            # Fallback to binary if original fails
+            original = cv2.cvtColor(binary_image, cv2.COLOR_GRAY2BGR)
 
-        # Colors
-        edge_color = (0, 255, 0)      # Green for edges
-        text_color = (255, 255, 255)  # White text
-        bg_color = (0, 100, 0)        # Dark green background for numbers
+        labeled = original.copy()
 
-        # Draw edges and labels
+        # Colors for cardinal directions
+        direction_colors = {
+            'N': (255, 0, 0),    # Blue for North
+            'S': (0, 255, 255),  # Yellow for South
+            'E': (0, 255, 0),    # Green for East
+            'W': (255, 0, 255)   # Magenta for West
+        }
+
+        # Draw edges with cardinal direction colors
         for i, edge in enumerate(edges):
             edge_num = i + 1
-            start = edge['start']
-            end = edge['end']
+            start = edge.start
+            end = edge.end
+            direction = edge.cardinal_direction
+            color = direction_colors.get(direction, (0, 255, 0))
 
             # Draw edge line (thicker)
-            cv2.line(labeled, start, end, edge_color, 4)
+            cv2.line(labeled, start, end, color, 4)
 
             # Calculate midpoint for label
             mid_x = int((start[0] + end[0]) / 2)
             mid_y = int((start[1] + end[1]) / 2)
 
             # Draw label background circle
-            cv2.circle(labeled, (mid_x, mid_y), 25, bg_color, -1)
-            cv2.circle(labeled, (mid_x, mid_y), 25, edge_color, 2)
+            cv2.circle(labeled, (mid_x, mid_y), 30, (50, 50, 50), -1)
+            cv2.circle(labeled, (mid_x, mid_y), 30, color, 2)
 
-            # Draw edge number
-            text = str(edge_num)
+            # Draw edge number and direction
+            text = f"{edge_num}"
             font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 0.8
+            font_scale = 0.9
             thickness = 2
 
             # Get text size for centering
@@ -162,11 +147,33 @@ class EdgeProcessor:
             text_x = mid_x - text_w // 2
             text_y = mid_y + text_h // 2
 
-            cv2.putText(labeled, text, (text_x, text_y), font, font_scale, text_color, thickness)
+            # Draw number
+            cv2.putText(labeled, text, (text_x, text_y), font, font_scale, (255, 255, 255), thickness)
 
-        # Add title
-        cv2.putText(labeled, "Floor Plan Edges - Enter measurements for each numbered edge",
-                   (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            # Draw direction indicator (small letter below)
+            dir_text = direction
+            dir_font_scale = 0.4
+            (dir_w, dir_h), _ = cv2.getTextSize(dir_text, font, dir_font_scale, 1)
+            dir_x = mid_x - dir_w // 2
+            dir_y = mid_y + 20
+            cv2.putText(labeled, dir_text, (dir_x, dir_y), font, dir_font_scale, (255, 255, 255), 1)
+
+        # Add title with cardinal directions legend
+        title_y = 30
+        cv2.putText(labeled, "Cardinal Edge Detection - Enter measurements for each edge",
+                   (20, title_y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+        # Add legend
+        legend_y = 60
+        legend_x = 20
+        cv2.putText(labeled, "N=North", (legend_x, legend_y),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, direction_colors['N'], 2)
+        cv2.putText(labeled, "S=South", (legend_x + 100, legend_y),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, direction_colors['S'], 2)
+        cv2.putText(labeled, "E=East", (legend_x + 200, legend_y),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, direction_colors['E'], 2)
+        cv2.putText(labeled, "W=West", (legend_x + 290, legend_y),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, direction_colors['W'], 2)
 
         # Save labeled image
         cv2.imwrite(output_path, labeled)

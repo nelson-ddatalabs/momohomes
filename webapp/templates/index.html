@@ -63,24 +63,81 @@
                         <h3 class="card-title mb-4">Step 2: Enter Edge Measurements</h3>
 
                         <div class="row">
-                            <!-- Left Column: Edge Image -->
+                            <!-- Left Column: Edge Image + Closure Panel -->
                             <div class="col-12 col-lg-6 mb-4">
                                 <h5 class="mb-3">Floor Plan with Labeled Edges</h5>
-                                <div id="edge-image-container" class="border rounded p-2 bg-light">
-                                    <img id="edge-image" src="" alt="Edge labeled floor plan" class="img-fluid">
+
+                                <!-- Zoom Controls -->
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="edge-zoom-out" title="Zoom Out (Mouse Wheel Down)">
+                                            <span style="font-size: 18px;">−</span>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="edge-zoom-reset" title="Reset View">
+                                            <span style="font-size: 14px;">100%</span>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" id="edge-zoom-in" title="Zoom In (Mouse Wheel Up)">
+                                            <span style="font-size: 18px;">+</span>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">Drag to pan • Scroll to zoom</small>
+                                </div>
+
+                                <!-- Edge Image Container with Pan & Zoom -->
+                                <div id="edge-image-container" class="border rounded p-2 bg-light" style="overflow: hidden; position: relative; height: 500px; cursor: grab;">
+                                    <img id="edge-image" src="" alt="Edge labeled floor plan"
+                                         style="position: absolute; transform-origin: 0 0; user-select: none; pointer-events: none;">
+                                </div>
+
+                                <!-- Polygon Closure Validation Panel (Below Image) -->
+                                <div id="closure-validation-panel" class="card mt-3" style="border: 2px solid #dee2e6;">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-3">
+                                            <strong>Polygon Closure Check</strong>
+                                            <small class="text-muted">(Required for Optimization)</small>
+                                        </h6>
+
+                                        <div class="row mb-2">
+                                            <div class="col-6">
+                                                <small class="text-muted">East:</small>
+                                                <span id="closure-east" class="ms-2 fw-bold">0.0 ft</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">West:</small>
+                                                <span id="closure-west" class="ms-2 fw-bold">0.0 ft</span>
+                                                <span id="closure-ew-icon" class="ms-1"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-6">
+                                                <small class="text-muted">North:</small>
+                                                <span id="closure-north" class="ms-2 fw-bold">0.0 ft</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">South:</small>
+                                                <span id="closure-south" class="ms-2 fw-bold">0.0 ft</span>
+                                                <span id="closure-ns-icon" class="ms-1"></span>
+                                            </div>
+                                        </div>
+
+                                        <div id="closure-status" class="alert alert-secondary mb-0" role="alert">
+                                            <strong>Status:</strong> <span id="closure-status-text">Enter measurements to validate</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Right Column: Measurement Form -->
                             <div class="col-12 col-lg-6">
-                                <h5 class="mb-3">Enter Measurements</h5>
+                                <h5 class="mb-3">Enter Measurements (feet)</h5>
                                 <form id="measurement-form">
-                                    <div id="measurement-inputs">
-                                        <!-- Dynamic inputs will be added here -->
+                                    <div id="measurement-inputs" class="row">
+                                        <!-- Dynamic inputs will be added here in two columns -->
                                     </div>
 
                                     <!-- Error Display -->
-                                    <div id="measurement-error-alert" class="alert alert-danger d-none" role="alert"></div>
+                                    <div id="measurement-error-alert" class="alert alert-danger d-none mt-3" role="alert"></div>
 
                                     <!-- Submit Button -->
                                     <div class="d-grid mt-4">

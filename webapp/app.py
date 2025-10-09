@@ -11,12 +11,24 @@ import json
 from pathlib import Path
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
+from typing import List, Dict, Tuple
 
 # Add parent directory to path to import optimization modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Add alternate parent directory for cardinal modules
+alt_parent = "/Users/nelsondsouza/Documents/products/momohomes"
+if alt_parent not in sys.path:
+    sys.path.insert(0, alt_parent)
+
 # Import edge processor
 from edge_processor import EdgeProcessor
+
+# Import cardinal system modules for polygon reconstruction
+from cardinal_edge_detector import CardinalEdge
+from cardinal_polygon_reconstructor import CardinalPolygonReconstructor
+from cardinal_edge_mapper import CardinalEdgeMapper
+from smart_edge_merger import SmartEdgeMerger
 
 app = Flask(__name__)
 app.secret_key = 'cassette-optimizer-secret-key-change-in-production'  # Change in production!
@@ -93,13 +105,18 @@ def upload_file():
         original_path = upload_dir / f"original_{filename}"
         file.save(str(original_path))
 
-        # Process edges
+        # Store filename in session for later use
+        session['original_filename'] = filename
+
+        # Process edges using cardinal system
         edge_processor = EdgeProcessor()
         edges_image_path = upload_dir / "edges_labeled.png"
+        binary_image_path = upload_dir / "binary.png"
 
         result = edge_processor.process_image(
             str(original_path),
-            str(edges_image_path)
+            str(edges_image_path),
+            str(binary_image_path)
         )
 
         if not result['success']:
@@ -109,12 +126,30 @@ def upload_file():
         session['edge_count'] = result['edge_count']
         session['edges'] = result['edges']
 
-        # Return success with edge data
+        # Store cardinal edges as serialized dict for polygon reconstruction
+        # Convert numpy int32 to Python int for JSON serialization
+        cardinal_edges_data = []
+        for edge in result.get('cardinal_edges', []):
+            cardinal_edges_data.append({
+                'start': (int(edge.start[0]), int(edge.start[1])),
+                'end': (int(edge.end[0]), int(edge.end[1])),
+                'pixel_length': float(edge.pixel_length),
+                'cardinal_direction': edge.cardinal_direction,
+                'measurement': None
+            })
+        session['cardinal_edges'] = cardinal_edges_data
+
+        # Return success with edge data and cardinal directions
+        edge_directions = {}
+        for i, edge_data in enumerate(cardinal_edges_data):
+            edge_directions[str(i + 1)] = edge_data['cardinal_direction']
+
         return jsonify({
             'success': True,
             'session_id': session_id,
             'edge_count': result['edge_count'],
-            'edges_image_url': f'/uploads/{session_id}/edges_labeled.png'
+            'edges_image_url': f'/uploads/{session_id}/edges_labeled.png',
+            'edge_directions': edge_directions
         })
 
     except Exception as e:
@@ -128,6 +163,74 @@ def serve_upload(session_id, filename):
     if file_path.exists():
         return send_file(str(file_path))
     return jsonify({'error': 'File not found'}), 404
+
+
+def validate_polygon_closure(cardinal_edges: List[Dict], measurements: Dict) -> Dict:
+    """
+    Validate that user measurements form a closed polygon.
+    For rectilinear polygons: Sum(East) must equal Sum(West), Sum(North) must equal Sum(South)
+
+    Args:
+        cardinal_edges: List of edge data with cardinal directions
+        measurements: Dict mapping edge_id to measurement value
+
+    Returns:
+        Dict with validation results:
+        {
+            'closes': bool,
+            'east': float,
+            'west': float,
+            'north': float,
+            'south': float,
+            'errors': List[str]
+        }
+    """
+    # Initialize directional sums
+    sums = {'E': 0.0, 'W': 0.0, 'N': 0.0, 'S': 0.0}
+
+    # Calculate sums from user measurements only
+    # Skip edges with zero measurement (they don't exist)
+    for i, edge_data in enumerate(cardinal_edges):
+        edge_id = str(i + 1)  # User sees 1-indexed edges
+
+        if edge_id in measurements:
+            measurement = float(measurements[edge_id])
+
+            # Only count non-zero measurements
+            if measurement > 0.01:  # Small threshold for floating point comparison
+                direction = edge_data['cardinal_direction']
+                sums[direction] += measurement
+
+    # Check closure constraints
+    errors = []
+
+    # Check East-West balance
+    horizontal_diff = abs(sums['E'] - sums['W'])
+    if horizontal_diff > 0.0:  # Exact closure required
+        errors.append(
+            f"East-West imbalance: East = {sums['E']:.2f} ft, West = {sums['W']:.2f} ft "
+            f"(difference: {horizontal_diff:.2f} ft)"
+        )
+
+    # Check North-South balance
+    vertical_diff = abs(sums['N'] - sums['S'])
+    if vertical_diff > 0.0:  # Exact closure required
+        errors.append(
+            f"North-South imbalance: North = {sums['N']:.2f} ft, South = {sums['S']:.2f} ft "
+            f"(difference: {vertical_diff:.2f} ft)"
+        )
+
+    # Determine if polygon closes
+    closes = len(errors) == 0
+
+    return {
+        'closes': closes,
+        'east': sums['E'],
+        'west': sums['W'],
+        'north': sums['N'],
+        'south': sums['S'],
+        'errors': errors
+    }
 
 
 @app.route('/optimize', methods=['POST'])
@@ -145,15 +248,26 @@ def optimize():
         # Import optimizer
         from gap_redistribution_optimizer import GapRedistributionOptimizer
 
-        # Get edge data from session
-        edges = session.get('edges', [])
-        if not edges:
+        # Get cardinal edge data from session
+        cardinal_edges = session.get('cardinal_edges', [])
+        if not cardinal_edges:
             return jsonify({'error': 'No edge data found in session'}), 400
 
-        # Convert measurements to polygon
-        # For now, create a simple rectangular polygon based on measurements
-        # This is a simplified version - actual implementation would use edge geometry
-        polygon = _create_polygon_from_measurements(edges, measurements)
+        # VALIDATE POLYGON CLOSURE BEFORE PROCEEDING
+        validation_result = validate_polygon_closure(cardinal_edges, measurements)
+
+        if not validation_result['closes']:
+            # Polygon doesn't close - block optimization and return error
+            error_message = "Polygon does not close. Please check your measurements:\n\n"
+            error_message += "\n".join(validation_result['errors'])
+
+            return jsonify({
+                'error': error_message,
+                'validation': validation_result
+            }), 400
+
+        # Convert measurements to polygon using CardinalPolygonReconstructor
+        polygon = _create_polygon_from_measurements(cardinal_edges, measurements)
 
         # Run optimization
         optimizer = GapRedistributionOptimizer(polygon)
@@ -166,6 +280,14 @@ def optimize():
         results_dir = Path(app.config['RESULTS_FOLDER']) / session_id
         results_dir.mkdir(parents=True, exist_ok=True)
 
+        # Extract floor plan name from original filename (without extension)
+        original_filename = session.get('original_filename', '')
+        if original_filename:
+            # Remove extension: "Umbra.png" -> "Umbra"
+            floor_plan_name = Path(original_filename).stem
+        else:
+            floor_plan_name = None
+
         # Save results JSON
         results_file = results_dir / 'results.json'
         with open(results_file, 'w') as f:
@@ -173,7 +295,8 @@ def optimize():
                 'cassettes': result['cassettes'],
                 'c_channels': result.get('c_channels', []),
                 'statistics': result['statistics'],
-                'polygon': polygon
+                'polygon': polygon,
+                'floor_plan_name': floor_plan_name
             }, f, indent=2)
 
         # Generate visualizations
@@ -199,7 +322,7 @@ def optimize():
             polygon=polygon,
             statistics=vis_stats,
             output_path=output_base,
-            floor_plan_name='Floor Plan'
+            floor_plan_name=floor_plan_name
         )
 
         return jsonify({
@@ -215,37 +338,75 @@ def optimize():
 
 def _create_polygon_from_measurements(edges: List[Dict], measurements: Dict) -> List[Tuple[float, float]]:
     """
-    Create polygon from edge measurements
-    This is a simplified version that creates a polygon from measured edges
+    Create polygon from cardinal edge measurements using CardinalPolygonReconstructor
+    This EXACTLY mirrors the flow in cassette_layout_system_cardinal.py
+
+    Zero-measurement edges are filtered out (they don't exist in the actual floor plan)
     """
-    # For now, create a simple rectangular polygon
-    # In a full implementation, this would reconstruct the polygon from edge geometry
+    # Step 1: Reconstruct CardinalEdge objects from session data
+    cardinal_edges = []
+    skipped_edges = []
 
-    # Extract measurements (convert to feet)
-    edge_lengths = [float(measurements.get(str(i+1), 10)) for i in range(len(edges))]
+    for i, edge_data in enumerate(edges):
+        edge = CardinalEdge(
+            start=tuple(edge_data['start']),
+            end=tuple(edge_data['end'])
+        )
+        edge.pixel_length = edge_data['pixel_length']
+        edge.cardinal_direction = edge_data['cardinal_direction']
 
-    # Simple algorithm: assume first measurement is width, second is height
-    # For complex polygons, this would need proper reconstruction
-    if len(edge_lengths) >= 4:
-        # Assume rectangular: width, height, width, height
-        width = edge_lengths[0]
-        height = edge_lengths[1]
+        # Add measurement from user input (convert to float)
+        # User sees 1-indexed edges (Edge 1, Edge 2, ...)
+        # But internally we work with 0-indexed
+        edge_id = i + 1
+        if str(edge_id) in measurements:
+            edge.measurement = float(measurements[str(edge_id)])
+        else:
+            edge.measurement = 0.0  # Default for missing measurements
 
-        return [
-            (0, 0),
-            (width, 0),
-            (width, height),
-            (0, height)
-        ]
-    else:
-        # Fallback: create square
-        side = edge_lengths[0] if edge_lengths else 30
-        return [
-            (0, 0),
-            (side, 0),
-            (side, side),
-            (0, side)
-        ]
+        # FILTER: Skip edges with zero or near-zero measurements (they don't exist)
+        if edge.measurement > 0.01:
+            cardinal_edges.append(edge)
+        else:
+            skipped_edges.append(edge_id)
+            print(f"Webapp: Skipping Edge {edge_id} (measurement: {edge.measurement:.3f} ft) - edge marked as non-existent")
+
+    if skipped_edges:
+        print(f"Webapp: Filtered out {len(skipped_edges)} zero-measurement edges: {skipped_edges}")
+        print(f"Webapp: Remaining edges: {len(cardinal_edges)}")
+
+    # Step 2: Build measurement dict (0-indexed for reconstructor)
+    # FIX: Reconstructor expects {0: ..., 1: ..., 2: ...} NOT {1: ..., 2: ..., 3: ...}
+    measurement_dict = {}
+    for i, edge in enumerate(cardinal_edges):
+        measurement_dict[i] = edge.measurement  # 0-indexed!
+
+    # Step 3: Smart edge merging (same as cardinal system)
+    # Merge edges with zero or minimal measurements
+    edge_merger = SmartEdgeMerger(min_edge_length=0.5)
+    original_edge_count = len(cardinal_edges)
+
+    cardinal_edges, measurement_dict = edge_merger.merge_edges(cardinal_edges, measurement_dict)
+
+    if len(cardinal_edges) < original_edge_count:
+        print(f"Webapp: Edges merged: {original_edge_count} -> {len(cardinal_edges)}")
+
+    # Step 4: Build polygon using CardinalPolygonReconstructor
+    reconstructor = CardinalPolygonReconstructor()
+    polygon = reconstructor.build_from_cardinal_measurements(cardinal_edges, measurement_dict)
+
+    # Step 5: Normalize to positive coordinates
+    polygon = reconstructor.normalize_to_positive()
+
+    # Step 6: Simplify polygon to remove duplicate vertices (same as cardinal system)
+    polygon = edge_merger.simplify_polygon(polygon)
+    print(f"Webapp: Final polygon has {len(polygon)} vertices")
+
+    # Log reconstruction details
+    print(f"Webapp: Polygon area: {reconstructor.area:.1f} sq ft")
+    print(f"Webapp: Polygon closure: {reconstructor.is_closed}, Error: {reconstructor.closure_error:.4f} ft")
+
+    return polygon
 
 
 @app.route('/result/<session_id>')
@@ -284,11 +445,56 @@ def serve_result(session_id, filename):
 
 @app.route('/download/<session_id>/svg')
 def download_svg(session_id):
-    """Download SVG file"""
+    """Download SVG file with floor plan name"""
     svg_file = Path(app.config['RESULTS_FOLDER']) / session_id / 'cassette_layout.svg'
-    if svg_file.exists():
-        return send_file(str(svg_file), as_attachment=True, download_name='floor_plan_optimized.svg')
-    return jsonify({'error': 'SVG not found'}), 404
+    if not svg_file.exists():
+        return jsonify({'error': 'SVG not found'}), 404
+
+    # Get floor plan name from results
+    results_file = Path(app.config['RESULTS_FOLDER']) / session_id / 'results.json'
+    floor_plan_name = None
+    if results_file.exists():
+        try:
+            with open(results_file, 'r') as f:
+                results_data = json.load(f)
+                floor_plan_name = results_data.get('floor_plan_name')
+        except:
+            pass
+
+    # Format filename
+    if floor_plan_name:
+        download_filename = f"{floor_plan_name}_Floor_Joist_Cassette_Plan.svg"
+    else:
+        download_filename = 'Floor_Joist_Cassette_Plan.svg'
+
+    return send_file(str(svg_file), as_attachment=True, download_name=download_filename)
+
+
+@app.route('/download/<session_id>/png')
+def download_png(session_id):
+    """Download PNG file with floor plan name"""
+    png_file = Path(app.config['RESULTS_FOLDER']) / session_id / 'cassette_layout.png'
+    if not png_file.exists():
+        return jsonify({'error': 'PNG not found'}), 404
+
+    # Get floor plan name from results
+    results_file = Path(app.config['RESULTS_FOLDER']) / session_id / 'results.json'
+    floor_plan_name = None
+    if results_file.exists():
+        try:
+            with open(results_file, 'r') as f:
+                results_data = json.load(f)
+                floor_plan_name = results_data.get('floor_plan_name')
+        except:
+            pass
+
+    # Format filename
+    if floor_plan_name:
+        download_filename = f"{floor_plan_name}_Floor_Joist_Cassette_Plan.png"
+    else:
+        download_filename = 'Floor_Joist_Cassette_Plan.png'
+
+    return send_file(str(png_file), as_attachment=True, download_name=download_filename)
 
 
 if __name__ == '__main__':
@@ -298,5 +504,5 @@ if __name__ == '__main__':
 
     # Run Flask app
     print("Starting Cassette Optimizer Web App...")
-    print("Access at: http://127.0.0.1:5000")
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    print("Access at: http://127.0.0.1:5001")
+    app.run(debug=True, host='127.0.0.1', port=5001)

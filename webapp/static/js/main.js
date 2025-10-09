@@ -2,6 +2,7 @@
 
 // Global variables
 let sessionId = null;
+let edgeDirections = {}; // Store cardinal directions for each edge
 
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
@@ -67,8 +68,9 @@ function initUploadForm() {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // Store session ID
+                // Store session ID and edge directions
                 sessionId = data.session_id;
+                edgeDirections = data.edge_directions || {};
 
                 // Show measurement section with edge image
                 showMeasurementSection(data.edges_image_url, data.edge_count);
@@ -129,10 +131,13 @@ function showMeasurementSection(edgeImageUrl, edgeCount) {
 
     // Initialize measurement form handler
     initMeasurementForm();
+
+    // Initialize edge image pan & zoom
+    initEdgeImagePanZoom();
 }
 
 /**
- * Generate measurement input fields (Phase 2)
+ * Generate measurement input fields (Phase 2) - Two-column layout
  */
 function generateMeasurementInputs(edgeCount) {
     const container = document.getElementById('measurement-inputs');
@@ -140,14 +145,17 @@ function generateMeasurementInputs(edgeCount) {
 
     for (let i = 1; i <= edgeCount; i++) {
         const inputGroup = document.createElement('div');
-        inputGroup.className = 'mb-3';
+        inputGroup.className = 'col-6 mb-2';
         inputGroup.innerHTML = `
-            <label for="edge-${i}" class="form-label">Edge ${i} (feet):</label>
-            <input type="number" class="form-control" id="edge-${i}" name="edge-${i}"
-                   step="0.1" min="1" max="1000" required>
+            <label for="edge-${i}" class="form-label small">Edge ${i}:</label>
+            <input type="number" class="form-control form-control-sm edge-measurement-input" id="edge-${i}" name="edge-${i}"
+                   step="0.1" min="0" max="1000" required data-direction="" style="max-width: 120px;">
         `;
         container.appendChild(inputGroup);
     }
+
+    // Add event listeners for live validation
+    addClosureValidationListeners();
 }
 
 /**
@@ -189,10 +197,31 @@ function initMeasurementForm() {
                 window.location.href = `/result/${sessionId}`;
             } else {
                 hideLoadingOverlay();
-                showError(
-                    document.getElementById('measurement-error-alert'),
-                    data.error || 'Optimization failed'
-                );
+
+                // Check if this is a closure validation error
+                const errorAlert = document.getElementById('measurement-error-alert');
+                if (data.validation) {
+                    // Format closure validation error with details
+                    let errorMsg = '<strong>Polygon Closure Error</strong><br><br>';
+                    errorMsg += 'The polygon does not close. Please check your measurements:<br><ul>';
+
+                    if (data.validation.errors && data.validation.errors.length > 0) {
+                        data.validation.errors.forEach(err => {
+                            errorMsg += `<li>${err}</li>`;
+                        });
+                    }
+
+                    errorMsg += '</ul>';
+                    errorMsg += '<small>Current sums:<br>';
+                    errorMsg += `East: ${data.validation.east} ft | West: ${data.validation.west} ft<br>`;
+                    errorMsg += `North: ${data.validation.north} ft | South: ${data.validation.south} ft</small>`;
+
+                    errorAlert.innerHTML = errorMsg;
+                    errorAlert.classList.remove('d-none');
+                } else {
+                    // Generic error
+                    showError(errorAlert, data.error || 'Optimization failed');
+                }
             }
         } catch (error) {
             hideLoadingOverlay();
@@ -226,4 +255,276 @@ function showLoadingOverlay() {
  */
 function hideLoadingOverlay() {
     document.getElementById('loading-overlay').classList.add('d-none');
+}
+
+/**
+ * Add closure validation event listeners to measurement inputs
+ */
+function addClosureValidationListeners() {
+    const inputs = document.querySelectorAll('.edge-measurement-input');
+    inputs.forEach(input => {
+        input.addEventListener('input', validateClosureRealtime);
+        input.addEventListener('change', validateClosureRealtime);
+    });
+
+    // Initial validation
+    validateClosureRealtime();
+}
+
+/**
+ * Real-time closure validation
+ */
+function validateClosureRealtime() {
+    // Calculate directional sums
+    const sums = { E: 0.0, W: 0.0, N: 0.0, S: 0.0 };
+
+    const inputs = document.querySelectorAll('.edge-measurement-input');
+    inputs.forEach(input => {
+        const edgeNum = input.id.replace('edge-', '');
+        const measurement = parseFloat(input.value) || 0.0;
+        const direction = edgeDirections[edgeNum];
+
+        // Only count non-zero measurements
+        if (measurement > 0.01 && direction) {
+            sums[direction] += measurement;
+        }
+    });
+
+    // Update UI with sums
+    document.getElementById('closure-east').textContent = sums.E.toFixed(2) + ' ft';
+    document.getElementById('closure-west').textContent = sums.W.toFixed(2) + ' ft';
+    document.getElementById('closure-north').textContent = sums.N.toFixed(2) + ' ft';
+    document.getElementById('closure-south').textContent = sums.S.toFixed(2) + ' ft';
+
+    // Check closure
+    const ewMatch = Math.abs(sums.E - sums.W) < 0.001;
+    const nsMatch = Math.abs(sums.N - sums.S) < 0.001;
+    const closes = ewMatch && nsMatch;
+
+    // Update icons
+    const ewIcon = document.getElementById('closure-ew-icon');
+    const nsIcon = document.getElementById('closure-ns-icon');
+
+    ewIcon.innerHTML = ewMatch ? '<span class="text-success">✓</span>' : '<span class="text-danger">✗</span>';
+    nsIcon.innerHTML = nsMatch ? '<span class="text-success">✓</span>' : '<span class="text-danger">✗</span>';
+
+    // Update status panel
+    const statusAlert = document.getElementById('closure-status');
+    const statusText = document.getElementById('closure-status-text');
+
+    if (closes) {
+        statusAlert.className = 'alert alert-success mb-0';
+        statusText.textContent = 'Polygon Closes ✓';
+    } else {
+        statusAlert.className = 'alert alert-danger mb-0';
+        let errorMsg = 'Polygon does not close: ';
+        const errors = [];
+        if (!ewMatch) {
+            const diff = Math.abs(sums.E - sums.W);
+            errors.push(`E-W difference: ${diff.toFixed(2)} ft`);
+        }
+        if (!nsMatch) {
+            const diff = Math.abs(sums.N - sums.S);
+            errors.push(`N-S difference: ${diff.toFixed(2)} ft`);
+        }
+        statusText.textContent = errorMsg + errors.join(', ');
+    }
+
+    // Enable/disable optimize button
+    const optimizeBtn = document.getElementById('optimize-btn');
+    if (closes) {
+        optimizeBtn.disabled = false;
+        optimizeBtn.title = '';
+    } else {
+        optimizeBtn.disabled = true;
+        optimizeBtn.title = 'Polygon must close before optimization';
+    }
+
+    return closes;
+}
+
+/**
+ * Initialize edge image pan & zoom functionality
+ */
+function initEdgeImagePanZoom() {
+    const container = document.getElementById('edge-image-container');
+    const image = document.getElementById('edge-image');
+    const zoomInBtn = document.getElementById('edge-zoom-in');
+    const zoomOutBtn = document.getElementById('edge-zoom-out');
+    const zoomResetBtn = document.getElementById('edge-zoom-reset');
+
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    const MIN_SCALE = 0.1;
+    const MAX_SCALE = 5;
+    const ZOOM_STEP = 0.2;
+    const PAN_STEP = 50;
+
+    function updateTransform() {
+        image.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        zoomResetBtn.innerHTML = `<span style="font-size: 14px;">${Math.round(scale * 100)}%</span>`;
+    }
+
+    function centerImage() {
+        const containerRect = container.getBoundingClientRect();
+        const imageRect = image.getBoundingClientRect();
+        translateX = (containerRect.width - imageRect.width) / 2;
+        translateY = (containerRect.height - imageRect.height) / 2;
+        updateTransform();
+    }
+
+    // Initialize: center the image when loaded
+    image.onload = function() {
+        centerImage();
+    };
+    if (image.complete && image.naturalWidth > 0) {
+        centerImage();
+    }
+
+    // Zoom In
+    zoomInBtn.addEventListener('click', () => {
+        if (scale < MAX_SCALE) {
+            const oldScale = scale;
+            scale = Math.min(MAX_SCALE, scale + ZOOM_STEP);
+            // Zoom towards center
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            translateX = centerX - (centerX - translateX) * (scale / oldScale);
+            translateY = centerY - (centerY - translateY) * (scale / oldScale);
+            updateTransform();
+        }
+    });
+
+    // Zoom Out
+    zoomOutBtn.addEventListener('click', () => {
+        if (scale > MIN_SCALE) {
+            const oldScale = scale;
+            scale = Math.max(MIN_SCALE, scale - ZOOM_STEP);
+            // Zoom towards center
+            const rect = container.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            translateX = centerX - (centerX - translateX) * (scale / oldScale);
+            translateY = centerY - (centerY - translateY) * (scale / oldScale);
+            updateTransform();
+        }
+    });
+
+    // Reset Zoom
+    zoomResetBtn.addEventListener('click', () => {
+        scale = 1;
+        centerImage();
+    });
+
+    // Mouse Wheel Zoom
+    container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = container.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const oldScale = scale;
+        if (e.deltaY < 0) {
+            scale = Math.min(MAX_SCALE, scale + ZOOM_STEP);
+        } else {
+            scale = Math.max(MIN_SCALE, scale - ZOOM_STEP);
+        }
+
+        // Zoom towards mouse position
+        translateX = mouseX - (mouseX - translateX) * (scale / oldScale);
+        translateY = mouseY - (mouseY - translateY) * (scale / oldScale);
+        updateTransform();
+    });
+
+    // Mouse Drag Pan
+    container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+        container.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateTransform();
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            container.style.cursor = 'grab';
+        }
+    });
+
+    // Arrow Keys Pan
+    document.addEventListener('keydown', (e) => {
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            // Only pan if measurement section is visible and no input is focused
+            if (!document.getElementById('measurement-section').classList.contains('d-none') &&
+                document.activeElement.tagName !== 'INPUT') {
+                e.preventDefault();
+                switch(e.key) {
+                    case 'ArrowUp':
+                        translateY += PAN_STEP;
+                        break;
+                    case 'ArrowDown':
+                        translateY -= PAN_STEP;
+                        break;
+                    case 'ArrowLeft':
+                        translateX += PAN_STEP;
+                        break;
+                    case 'ArrowRight':
+                        translateX -= PAN_STEP;
+                        break;
+                }
+                updateTransform();
+            }
+        }
+    });
+
+    // Touch support for mobile
+    let touchStartDist = 0;
+    let touchStartScale = 1;
+
+    container.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            const dx = e.touches[0].clientX - e.touches[1].clientX;
+            const dy = e.touches[0].clientY - e.touches[1].clientY;
+            touchStartDist = Math.sqrt(dx * dx + dy * dy);
+            touchStartScale = scale;
+        } else if (e.touches.length === 1) {
+            isDragging = true;
+            startX = e.touches[0].clientX - translateX;
+            startY = e.touches[0].clientY - translateY;
+        }
+    });
+
+    container.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (e.touches.length === 2) {
+            const dx = e.touches[0].clientX - e.touches[1].clientX;
+            const dy = e.touches[0].clientY - e.touches[1].clientY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, touchStartScale * (dist / touchStartDist)));
+            updateTransform();
+        } else if (e.touches.length === 1 && isDragging) {
+            translateX = e.touches[0].clientX - startX;
+            translateY = e.touches[0].clientY - startY;
+            updateTransform();
+        }
+    });
+
+    container.addEventListener('touchend', () => {
+        isDragging = false;
+        touchStartDist = 0;
+    });
 }
